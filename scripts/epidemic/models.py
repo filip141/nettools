@@ -467,29 +467,36 @@ class SISMultilayer(EpidemicModel):
 
 
 if __name__ == '__main__':
-    network = er_multilayer(120, 3, p=0.06)
+    from scripts.monoplex.centrality import CentralityMeasure
+    network = er_multilayer(300, 3, p=0.06)
     # Closeness
-    bb = nx.closeness_centrality(aggregate(network, 1))
+    import networkx as netx
+    an = aggregate(network, 1)
+    cm = CentralityMeasure(an)
+    # netx.draw_networkx(cm.network_graph)
+    bb = cm.supernode_rank()
+    # netx.draw_circular(bb, node_size=20)
+    # plt.show()
     max_node = np.argmax(bb.values())
     seed = network.get_supra_adjacency_matrix()[1][max_node]
     sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
     print(sir.epidemic_data(epochs=3, show=False)[1][-1])
-    # Closeness
-    bb = nx.betweenness_centrality(aggregate(network, 1))
-    max_node = np.argmax(bb.values())
-    seed = network.get_supra_adjacency_matrix()[1][max_node]
-    sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
-    print(sir.epidemic_data(epochs=3, show=False)[1][-1])
-    # Eigen
-    bb = nx.eigenvector_centrality_numpy(aggregate(network, 1))
-    max_node = np.argmax(bb.values())
-    seed = network.get_supra_adjacency_matrix()[1][max_node]
-    sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
-    print(sir.epidemic_data(epochs=3, show=False)[1][-1])
-    # Eigen
-    bb = nx.pagerank_numpy(aggregate(network, 1))
-    max_node = np.argmax(bb.values())
-    seed = network.get_supra_adjacency_matrix()[1][max_node]
-    sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
-    print(sir.epidemic_data(epochs=3, show=False)[1][-1])
+    # # Closeness
+    # bb = nx.betweenness_centrality(aggregate(network, 1))
+    # max_node = np.argmax(bb.values())
+    # seed = network.get_supra_adjacency_matrix()[1][max_node]
+    # sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
+    # print(sir.epidemic_data(epochs=3, show=False)[1][-1])
+    # # Eigen
+    # bb = nx.eigenvector_centrality_numpy(aggregate(network, 1))
+    # max_node = np.argmax(bb.values())
+    # seed = network.get_supra_adjacency_matrix()[1][max_node]
+    # sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
+    # print(sir.epidemic_data(epochs=3, show=False)[1][-1])
+    # # Eigen
+    # bb = nx.pagerank_numpy(aggregate(network, 1))
+    # max_node = np.argmax(bb.values())
+    # seed = network.get_supra_adjacency_matrix()[1][max_node]
+    # sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
+    # print(sir.epidemic_data(epochs=3, show=False)[1][-1])
 
