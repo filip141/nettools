@@ -4,9 +4,7 @@ import numpy as np
 import networkx as nx
 import scipy.stats as stats
 import multiprocessing as mp
-import matplotlib.pyplot as plt
 from scripts.utils.netutils import load_multinet_by_name
-from scripts.monoplex.centrality import CentralityMeasure
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -34,36 +32,17 @@ class InterMeasures(object):
         self.agg_net = self.aggregate(self.network_graph_np)
         self.agg_onet = self.aggregate(self.network_weights_np)
         self.one_triad_clustering_pool(self.network_graph_np)
-        # score, results = self.network_interdependence(network=self.network_graph_np[:, :, :15])
-        # plt.bar([x for x in range(len(results))], results)
-        # plt.show()
-        # print(score)
-        # degree = self.degree_distribution(self.network_graph_np)
-        # pdc = self.degree_layer_dependence(self.network_graph_np, weight_network=self.network_weights_np)
-        # plt.figure()
-        # plt.imshow(np.repeat(np.repeat(pdc, 10, axis=0), 10, axis=1))
-        # plt.show(True)
-        # print()
-
-        # cn = CentralityMeasure(self.network_graph_np[:, :, 0], from_numpy=True)
-        # korr = self.kendal_corr(degree[:10])
-        # res_kor = np.repeat(np.repeat(korr, 100, axis=0), 100, axis=1)
-        # plt.figure()
-        # plt.imshow(res_kor)
-        # plt.show()
-        # res_kor = np.repeat(res_kor, 100, axis=1)
-        # o = np.sum(self.agg_net, axis=1)
-        # pc = self.participation_coeff(self.network_graph_np, self.agg_net)
-        # plt.figure()
-        # plt.plot(np.sort(pc)[::-1], '.r')
-        # plt.figure()
-        # plt.scatter(pc, (o - np.mean(o)) / np.std(o))
-        # plt.show()
-        # plt.imshow(res_kor)
-        # print()
 
     @staticmethod
     def one_triad_clustering(network):
+        """
+        Clustering coefficient non multiprocess method.
+        Very, very, very slow.
+        In future should be replaced for method using cython or cuda.
+
+        :param network: Network adjacency matrix,
+        :return: One triad clustering coefficient.
+        """
         layers_num = network.shape[-1]
         result = np.zeros(network.shape[:-1])
         # Compute for each network layer
@@ -85,6 +64,15 @@ class InterMeasures(object):
         return result
 
     def one_triad_clustering_pool(self, network):
+        """
+        Clustering coefficient is very computational efficient method,
+        for that reason method uses multiprocess library for computation.
+        Using this method can improve performance but only when reasonably small
+        number of nodes is in network (+- < 1000).
+
+        :param network: Network adjacency matrix,
+        :return: One triad clustering coefficient.
+        """
         output = mp.Queue()
         # Initialize processes
         processes = [mp.Process(target=self.worker_method,
@@ -106,7 +94,15 @@ class InterMeasures(object):
         # Normalize
         return results
 
+    # noinspection PyMethodMayBeStatic
     def worker_method(self, network, idx, output):
+        """
+        Worker method for multiprocess pool.
+
+        :param network: Network adjacency matrix,
+        :param idx: clustering coefficient index/ node index [i]
+        :param output: Process queue.
+        """
         layers_num = network.shape[-1]
         results = 0
         for row_l_idx in range(layers_num):
@@ -123,6 +119,14 @@ class InterMeasures(object):
 
     @staticmethod
     def interdependence(network, layer):
+        """
+        Interdependence is measure of reachability or layer importance in case
+        of measuring path lengths between nodes.
+
+        :param network: Network adjacency matrix,
+        :param layer: for which interdependence will be measured,
+        :return: Interdependence for layer, Path proportion between nodes.
+        """
         # Aggregate network
         agg_net = InterMeasures.aggregate(network)
         agg_nx = nx.from_numpy_matrix(agg_net)
@@ -144,6 +148,15 @@ class InterMeasures(object):
 
     @staticmethod
     def network_interdependence(network):
+        """
+        Method for measuring interdependence for whole network,
+        Interdependence is measure of reachability or layer importance in case
+        of measuring path lengths between nodes. In this method interdependence is measured for
+        each layer and next mean value is returned for network as a whole.
+
+        :param network: Network adjacency matrix,
+        :return: Interdependence for network (float), Interdependence's for each layer (list)
+        """
         net_size = network.shape
         layer_scores = []
         for layer_num in range(net_size[-1]):
@@ -152,6 +165,15 @@ class InterMeasures(object):
 
     @staticmethod
     def degree_layer_dependence(network, weight_network=None):
+        """
+        Method generates matrix with [layer x layer] elements,
+        each element contains probability of finding link at test layer
+        given reference layer.
+
+        :param network: Network adjacency matrix,
+        :param weight_network: if weighted network should be used as reference,
+        :return: Probability of finding a link on test layer given reference between each layer.
+        """
         if weight_network is None:
             weight_network = network
         layers_num = network.shape[-1]
@@ -164,10 +186,33 @@ class InterMeasures(object):
 
     @staticmethod
     def degree_conditional(ref_layer, test_layer):
+        """
+        Probability of finding a link at layer ref_layer
+        given the presence of an edge between the same nodes at
+        layer test_layer.
+
+        :param ref_layer: reference layer,
+        :param test_layer: test layer,
+        :return: Probability of finding a link on test layer given reference.
+        """
         return np.sum(ref_layer * test_layer) / np.sum(ref_layer)
 
     @staticmethod
     def participation_coeff(network, agg_net):
+        """
+        Participation coefficient:
+        "Metrics for the analysis of multiplex networks" Battiston et. al.
+        Measure introduced for measuring participation in each layer,
+        P_i takes value between [0, 1] and measures whether the links of node i
+        are uniformly distributed among the M layers, or are instead primarily
+        concentrated in just one or a few layers. Namely, the coefficient P_i is equal
+         to 0 when all the edges of i lie in one layer, while Pi = 1 only when node i has exactly
+         the same number of edges on each of the M layers
+
+        :param network: Network adjacency matrix,
+        :param agg_net: Aggregated adjacency matrix,
+        :return: Participation coefficient value.
+        """
         net_size = network.shape
 
         # Reshape aggregated network
@@ -180,6 +225,14 @@ class InterMeasures(object):
 
     @staticmethod
     def kendal_corr(distribution):
+        """
+        Kendal correlation for network degree distribution. Method use degree distribution
+        passed as input ands compute Kendal correlation between layers.
+        Numpy array is returned in format [layer x layer]
+
+        :param distribution: degree distribution for each layer,
+        :return: Kendal correlation matrix between layers.
+        """
         dist_size = distribution.shape[0]
         result = np.zeros((dist_size, dist_size))
         for row_c_idx in range(dist_size):
@@ -193,6 +246,13 @@ class InterMeasures(object):
 
     @staticmethod
     def degree_distribution(net):
+        """
+        Method compute degree distribution from adjacency matrix.
+        Degree distribution is computed for each layer separately.
+
+        :param net: Adjacency matrix - numpy array [nodes x nodes x layers],
+        :return: Degree distribution given layer.
+        """
         net_size = net.shape
         if len(net_size) == 2:
             return np.sum(net, axis=1)
@@ -202,6 +262,14 @@ class InterMeasures(object):
 
     @staticmethod
     def aggregate(net):
+        """
+        Method for aggregating network, method accepts network on input and
+        return aggregated network. Input network should be in image style
+        number of node x number of nodes x layers.
+
+        :param net: Adjacency matrix - numpy array [nodes x nodes x layers]
+        :return: Aggregated network [nodes x nodes]
+        """
         agg_net = np.sum(net, axis=2)
         return agg_net
 
