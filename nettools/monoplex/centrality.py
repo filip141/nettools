@@ -1,7 +1,7 @@
 import community
 import numpy as np
 import networkx as nx
-from scripts.utils.netutils import NX_CENTRALITY
+from ..utils.netutils import NX_CENTRALITY
 
 
 class CentralityMeasure(object):

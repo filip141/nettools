@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/scripts/utils/netutils.py" line="36" />
+    <bookmark url="file://$PROJECT_DIR$/nettools/utils/netutils.py" line="41" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3034f3cc-8b5f-486f-828a-d04f899265ed" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/multiplex/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/multiplex/interdependence.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nettools/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/notebooks/.ipynb_checkpoints/Interdependence-checkpoint.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/notebooks/Interdependence.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/setup.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/scripts/__init__.py" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/scripts/epidemic/__init__.py" afterPath="$PROJECT_DIR$/nettools/utils/__init__.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/scripts/epidemic/models.py" afterPath="$PROJECT_DIR$/nettools/epidemic/models.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/scripts/monoplex/__init__.py" afterPath="$PROJECT_DIR$/nettools/multiplex/__init__.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/scripts/monoplex/centrality.py" afterPath="$PROJECT_DIR$/nettools/monoplex/centrality.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/scripts/multiplex/__init__.py" afterPath="$PROJECT_DIR$/nettools/monoplex/__init__.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/scripts/multiplex/interdependence.py" afterPath="$PROJECT_DIR$/nettools/multiplex/interdependence.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/scripts/utils/__init__.py" afterPath="$PROJECT_DIR$/nettools/epidemic/__init__.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/scripts/utils/netutils.py" afterPath="$PROJECT_DIR$/nettools/utils/netutils.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/epidemic/models.py" afterPath="$PROJECT_DIR$/scripts/epidemic/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/monoplex/centrality.py" afterPath="$PROJECT_DIR$/scripts/monoplex/centrality.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/utils/netutils.py" afterPath="$PROJECT_DIR$/scripts/utils/netutils.py" />
     </list>
     <ignored path="nettools.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,92 +43,29 @@
     <favorites_list name="nettools" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="18" selection-end-column="18" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-                <element signature="e#807#1115#0" expanded="false" />
-                <element signature="e#1227#2181#0" expanded="false" />
-                <element signature="e#2224#2297#0" expanded="false" />
-                <element signature="e#2341#2414#0" expanded="false" />
-                <element signature="e#2449#3154#0" expanded="false" />
-                <element signature="e#3190#3424#0" expanded="false" />
-                <element signature="e#3532#4138#0" expanded="false" />
-                <element signature="e#4189#4607#0" expanded="false" />
-                <element signature="e#4646#7911#0" expanded="false" />
-                <element signature="e#4719#5532#0" expanded="false" />
-                <element signature="e#5575#5648#0" expanded="false" />
-                <element signature="e#5692#5765#0" expanded="false" />
-                <element signature="e#5800#6470#0" expanded="false" />
-                <element signature="e#6506#6740#0" expanded="false" />
-                <element signature="e#6780#6807#0" expanded="false" />
-                <element signature="e#6848#7442#0" expanded="false" />
-                <element signature="e#7493#7911#0" expanded="false" />
-                <element signature="e#7955#12463#0" expanded="false" />
-                <element signature="e#9223#9306#0" expanded="false" />
-                <element signature="e#9352#9392#0" expanded="false" />
-                <element signature="e#9442#9767#0" expanded="false" />
-                <element signature="e#9802#11106#0" expanded="false" />
-                <element signature="e#11150#11276#0" expanded="false" />
-                <element signature="e#11319#11400#0" expanded="false" />
-                <element signature="e#11436#11586#0" expanded="false" />
-                <element signature="e#11626#11653#0" expanded="false" />
-                <element signature="e#11710#11899#0" expanded="false" />
-                <element signature="e#11960#12463#0" expanded="false" />
-                <element signature="e#12507#16859#0" expanded="false" />
-                <element signature="e#12611#13714#0" expanded="false" />
-                <element signature="e#13762#13845#0" expanded="false" />
-                <element signature="e#13891#13931#0" expanded="false" />
-                <element signature="e#13981#14306#0" expanded="false" />
-                <element signature="e#14341#15614#0" expanded="false" />
-                <element signature="e#15658#15739#0" expanded="false" />
-                <element signature="e#15782#15863#0" expanded="false" />
-                <element signature="e#15899#16049#0" expanded="false" />
-                <element signature="e#16089#16116#0" expanded="false" />
-                <element signature="e#16173#16403#0" expanded="false" />
-                <element signature="e#16465#16859#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="centrality.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="60" />
-              <folding>
-                <element signature="e#0#16#0" expanded="true" />
-                <element signature="e#1012#2191#0" expanded="false" />
-                <element signature="e#2239#4229#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
+    <leaf>
       <file leaf-file-name="interdependence.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scripts/multiplex/interdependence.py">
+        <entry file="file://$PROJECT_DIR$/nettools/multiplex/interdependence.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.2292683">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5394525">
+              <caret line="163" column="0" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="netutils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="35" column="57" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="57" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#357#1221#0" expanded="false" />
+                <element signature="e#1288#2622#0" expanded="false" />
+                <element signature="e#2682#3784#0" expanded="false" />
+                <element signature="e#3884#4837#0" expanded="false" />
+                <element signature="e#4906#6138#0" expanded="false" />
+                <element signature="e#6208#6949#0" expanded="false" />
+                <element signature="e#7040#7949#0" expanded="false" />
+                <element signature="e#8028#8417#0" expanded="false" />
+                <element signature="e#8492#9608#0" expanded="false" />
+                <element signature="e#9671#10446#0" expanded="false" />
+                <element signature="e#10508#10994#0" expanded="false" />
+                <element signature="e#11046#11452#0" expanded="false" />
+                <element signature="e#11515#11795#0" expanded="false" />
+                <element signature="e#11839#11926#0" expanded="false" />
+                <element signature="e#11968#12109#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -132,6 +77,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="Setup Script" />
       </list>
     </option>
   </component>
@@ -153,6 +99,18 @@
         <option value="$PROJECT_DIR$/scripts/utils/netutils.py" />
         <option value="$PROJECT_DIR$/scripts/monoplex/centrality.py" />
         <option value="$PROJECT_DIR$/scripts/multiplex/interdependence.py" />
+        <option value="$PROJECT_DIR$/__init__.py" />
+        <option value="$PROJECT_DIR$/notebooks/__init__.py" />
+        <option value="$PROJECT_DIR$/scripts/__init__.py" />
+        <option value="$PROJECT_DIR$/scripts/nettools/__init__.py" />
+        <option value="$PROJECT_DIR$/scripts/nettools/monoplex/centrality.py" />
+        <option value="$PROJECT_DIR$/scripts/nettools/multiplex/interdependence.py" />
+        <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/nettools/epidemic/__init__.py" />
+        <option value="$PROJECT_DIR$/nettools/utils/__init__.py" />
+        <option value="$PROJECT_DIR$/nettools/multiplex/__init__.py" />
+        <option value="$PROJECT_DIR$/nettools/monoplex/__init__.py" />
+        <option value="$PROJECT_DIR$/nettools/multiplex/interdependence.py" />
       </list>
     </option>
   </component>
@@ -163,8 +121,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="1366" />
-    <option name="height" value="742" />
+    <option name="x" value="-1" />
+    <option name="width" value="1922" />
+    <option name="height" value="1055" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -191,6 +150,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -208,8 +168,18 @@
               <option name="myItemId" value="nettools" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+          </PATH>
+          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
+              <option name="myItemId" value="nettools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nettools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="notebooks" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -223,7 +193,21 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
+              <option name="myItemId" value="nettools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nettools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nettools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nettools" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -241,7 +225,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
+              <option name="myItemId" value="nettools" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -259,7 +243,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
+              <option name="myItemId" value="nettools" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -277,7 +261,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="scripts" />
+              <option name="myItemId" value="nettools" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -285,70 +269,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="nettools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="nettools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="nettools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="nettools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
     <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/scripts/nettools" />
+      <recent name="$PROJECT_DIR$/scripts/epidemic" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
+      <recent name="$PROJECT_DIR$/notebooks" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/scripts/utils" />
       <recent name="$PROJECT_DIR$/scripts/monoplex" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/scripts/epidemic" />
-    </key>
   </component>
-  <component name="RunManager" selected="Python.interdependence">
-    <configuration default="false" name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="nettools" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.interdependence (1)">
     <configuration default="false" name="epidemic_models" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -363,24 +309,6 @@
       <module name="nettools" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/epidemic/models.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="centrality" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts/monoplex" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="nettools" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/monoplex/centrality.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -417,6 +345,42 @@
       <module name="nettools" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/multiplex/interdependence.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="centrality (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts/nettools/monoplex" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="nettools" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/nettools/monoplex/centrality.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="interdependence (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/nettools/multiplex" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="nettools" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/nettools/multiplex/interdependence.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -561,19 +525,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.test" />
-      <item index="1" class="java.lang.String" itemvalue="Python.epidemic_models" />
-      <item index="2" class="java.lang.String" itemvalue="Python.centrality" />
-      <item index="3" class="java.lang.String" itemvalue="Python.netutils" />
-      <item index="4" class="java.lang.String" itemvalue="Python.interdependence" />
+      <item index="0" class="java.lang.String" itemvalue="Python.epidemic_models" />
+      <item index="1" class="java.lang.String" itemvalue="Python.netutils" />
+      <item index="2" class="java.lang.String" itemvalue="Python.interdependence" />
+      <item index="3" class="java.lang.String" itemvalue="Python.centrality (1)" />
+      <item index="4" class="java.lang.String" itemvalue="Python.interdependence (1)" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.interdependence" />
-        <item index="1" class="java.lang.String" itemvalue="Python.netutils" />
-        <item index="2" class="java.lang.String" itemvalue="Python.epidemic_models" />
-        <item index="3" class="java.lang.String" itemvalue="Python.centrality" />
-        <item index="4" class="java.lang.String" itemvalue="Python.test" />
+        <item index="0" class="java.lang.String" itemvalue="Python.interdependence (1)" />
+        <item index="1" class="java.lang.String" itemvalue="Python.centrality (1)" />
+        <item index="2" class="java.lang.String" itemvalue="Python.interdependence" />
+        <item index="3" class="java.lang.String" itemvalue="Python.netutils" />
+        <item index="4" class="java.lang.String" itemvalue="Python.epidemic_models" />
       </list>
     </recent_temporary>
   </component>
@@ -592,14 +556,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1366" height="742" extended-state="0" />
+    <frame x="-1" y="0" width="1922" height="1055" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1816828" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12848867" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32872504" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35176653" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29953918" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32780084" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35165974" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2987552" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -629,14 +593,16 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="voterank and supernode centrality added" />
-    <option name="LAST_COMMIT_MESSAGE" value="voterank and supernode centrality added" />
+    <MESSAGE value="pooling and slow coeffs" />
+    <MESSAGE value="docstrings" />
+    <option name="LAST_COMMIT_MESSAGE" value="docstrings" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/scripts/multiplex/interdependence.py</url>
-          <line>93</line>
+          <url>file://$PROJECT_DIR$/nettools/multiplex/interdependence.py</url>
+          <line>89</line>
           <option name="timeStamp" value="245" />
         </line-breakpoint>
       </breakpoints>
@@ -647,116 +613,37 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="246" />
+      <option name="time" value="249" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/multiplex/interdependence.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="35" column="57" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="57" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="18" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/multiplex/interdependence.py">
+    <entry file="file://$PROJECT_DIR$/nettools/multiplex/interdependence.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="27" column="27" selection-start-line="27" selection-start-column="27" selection-end-line="27" selection-end-column="27" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#357#1221#0" expanded="false" />
+            <element signature="e#1288#2622#0" expanded="false" />
+            <element signature="e#2682#3784#0" expanded="false" />
+            <element signature="e#3884#4837#0" expanded="false" />
+            <element signature="e#4906#6138#0" expanded="false" />
+            <element signature="e#6208#6949#0" expanded="false" />
+            <element signature="e#7040#7949#0" expanded="false" />
+            <element signature="e#8028#8417#0" expanded="false" />
+            <element signature="e#8492#9608#0" expanded="false" />
+            <element signature="e#9671#10446#0" expanded="false" />
+            <element signature="e#10508#10994#0" expanded="false" />
+            <element signature="e#11046#11452#0" expanded="false" />
+            <element signature="e#11515#11795#0" expanded="false" />
+            <element signature="e#11839#11926#0" expanded="false" />
+            <element signature="e#11968#12109#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
+    <entry file="file://$PROJECT_DIR$/nettools/utils/netutils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -766,79 +653,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="18" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/centrality.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/multiplex/interdependence.py">
+    <entry file="file://$PROJECT_DIR$/nettools/multiplex/interdependence.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#357#1221#0" expanded="false" />
+            <element signature="e#1288#2622#0" expanded="false" />
+            <element signature="e#2682#3784#0" expanded="false" />
+            <element signature="e#3884#4837#0" expanded="false" />
+            <element signature="e#4906#6138#0" expanded="false" />
+            <element signature="e#6208#6949#0" expanded="false" />
+            <element signature="e#7040#7949#0" expanded="false" />
+            <element signature="e#8028#8417#0" expanded="false" />
+            <element signature="e#8492#9608#0" expanded="false" />
+            <element signature="e#9671#10446#0" expanded="false" />
+            <element signature="e#10508#10994#0" expanded="false" />
+            <element signature="e#11046#11452#0" expanded="false" />
+            <element signature="e#11515#11795#0" expanded="false" />
+            <element signature="e#11839#11926#0" expanded="false" />
+            <element signature="e#11968#12109#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
+    <entry file="file://$PROJECT_DIR$/nettools/utils/netutils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
@@ -848,141 +702,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/centrality.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="18" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/centrality.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/multiplex/interdependence.py">
+    <entry file="file://$PROJECT_DIR$/nettools/multiplex/interdependence.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#357#1221#0" expanded="false" />
+            <element signature="e#1288#2622#0" expanded="false" />
+            <element signature="e#2682#3784#0" expanded="false" />
+            <element signature="e#3884#4837#0" expanded="false" />
+            <element signature="e#4906#6138#0" expanded="false" />
+            <element signature="e#6208#6949#0" expanded="false" />
+            <element signature="e#7040#7949#0" expanded="false" />
+            <element signature="e#8028#8417#0" expanded="false" />
+            <element signature="e#8492#9608#0" expanded="false" />
+            <element signature="e#9671#10446#0" expanded="false" />
+            <element signature="e#10508#10994#0" expanded="false" />
+            <element signature="e#11046#11452#0" expanded="false" />
+            <element signature="e#11515#11795#0" expanded="false" />
+            <element signature="e#11839#11926#0" expanded="false" />
+            <element signature="e#11968#12109#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
+    <entry file="file://$PROJECT_DIR$/nettools/utils/netutils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
@@ -992,79 +765,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/multiplex/interdependence.py">
+    <entry file="file://$PROJECT_DIR$/nettools/multiplex/interdependence.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="23" selection-start-line="5" selection-start-column="23" selection-end-line="5" selection-end-column="23" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#357#1221#0" expanded="false" />
+            <element signature="e#1288#2622#0" expanded="false" />
+            <element signature="e#2682#3784#0" expanded="false" />
+            <element signature="e#3884#4837#0" expanded="false" />
+            <element signature="e#4906#6138#0" expanded="false" />
+            <element signature="e#6208#6949#0" expanded="false" />
+            <element signature="e#7040#7949#0" expanded="false" />
+            <element signature="e#8028#8417#0" expanded="false" />
+            <element signature="e#8492#9608#0" expanded="false" />
+            <element signature="e#9671#10446#0" expanded="false" />
+            <element signature="e#10508#10994#0" expanded="false" />
+            <element signature="e#11046#11452#0" expanded="false" />
+            <element signature="e#11515#11795#0" expanded="false" />
+            <element signature="e#11839#11926#0" expanded="false" />
+            <element signature="e#11968#12109#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/centrality.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="62" column="37" selection-start-line="62" selection-start-column="37" selection-end-line="62" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
+    <entry file="file://$PROJECT_DIR$/nettools/utils/netutils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="52" column="73" selection-start-line="52" selection-start-column="73" selection-end-line="52" selection-end-column="73" />
@@ -1074,79 +814,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="486" column="26" selection-start-line="486" selection-start-column="26" selection-end-line="486" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/multiplex/interdependence.py">
+    <entry file="file://$PROJECT_DIR$/nettools/multiplex/interdependence.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#357#1221#0" expanded="false" />
+            <element signature="e#1288#2622#0" expanded="false" />
+            <element signature="e#2682#3784#0" expanded="false" />
+            <element signature="e#3884#4837#0" expanded="false" />
+            <element signature="e#4906#6138#0" expanded="false" />
+            <element signature="e#6208#6949#0" expanded="false" />
+            <element signature="e#7040#7949#0" expanded="false" />
+            <element signature="e#8028#8417#0" expanded="false" />
+            <element signature="e#8492#9608#0" expanded="false" />
+            <element signature="e#9671#10446#0" expanded="false" />
+            <element signature="e#10508#10994#0" expanded="false" />
+            <element signature="e#11046#11452#0" expanded="false" />
+            <element signature="e#11515#11795#0" expanded="false" />
+            <element signature="e#11839#11926#0" expanded="false" />
+            <element signature="e#11968#12109#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/centrality.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="62" column="37" selection-start-line="62" selection-start-column="37" selection-end-line="62" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
+    <entry file="file://$PROJECT_DIR$/nettools/utils/netutils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
@@ -1163,69 +870,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="483" column="17" selection-start-line="483" selection-start-column="17" selection-end-line="483" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/centrality.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
+    <entry file="file://$PROJECT_DIR$/nettools/utils/netutils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
@@ -1242,69 +901,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/centrality.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
+    <entry file="file://$PROJECT_DIR$/nettools/utils/netutils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
@@ -1321,214 +932,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/__init__.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/__init__.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1584,84 +1009,102 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/epidemic/models.py">
+    <entry file="file://$PROJECT_DIR$/nettools/utils/netutils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="18" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#807#1115#0" expanded="false" />
-            <element signature="e#1227#2181#0" expanded="false" />
-            <element signature="e#2224#2297#0" expanded="false" />
-            <element signature="e#2341#2414#0" expanded="false" />
-            <element signature="e#2449#3154#0" expanded="false" />
-            <element signature="e#3190#3424#0" expanded="false" />
-            <element signature="e#3532#4138#0" expanded="false" />
-            <element signature="e#4189#4607#0" expanded="false" />
-            <element signature="e#4646#7911#0" expanded="false" />
-            <element signature="e#4719#5532#0" expanded="false" />
-            <element signature="e#5575#5648#0" expanded="false" />
-            <element signature="e#5692#5765#0" expanded="false" />
-            <element signature="e#5800#6470#0" expanded="false" />
-            <element signature="e#6506#6740#0" expanded="false" />
-            <element signature="e#6780#6807#0" expanded="false" />
-            <element signature="e#6848#7442#0" expanded="false" />
-            <element signature="e#7493#7911#0" expanded="false" />
-            <element signature="e#7955#12463#0" expanded="false" />
-            <element signature="e#9223#9306#0" expanded="false" />
-            <element signature="e#9352#9392#0" expanded="false" />
-            <element signature="e#9442#9767#0" expanded="false" />
-            <element signature="e#9802#11106#0" expanded="false" />
-            <element signature="e#11150#11276#0" expanded="false" />
-            <element signature="e#11319#11400#0" expanded="false" />
-            <element signature="e#11436#11586#0" expanded="false" />
-            <element signature="e#11626#11653#0" expanded="false" />
-            <element signature="e#11710#11899#0" expanded="false" />
-            <element signature="e#11960#12463#0" expanded="false" />
-            <element signature="e#12507#16859#0" expanded="false" />
-            <element signature="e#12611#13714#0" expanded="false" />
-            <element signature="e#13762#13845#0" expanded="false" />
-            <element signature="e#13891#13931#0" expanded="false" />
-            <element signature="e#13981#14306#0" expanded="false" />
-            <element signature="e#14341#15614#0" expanded="false" />
-            <element signature="e#15658#15739#0" expanded="false" />
-            <element signature="e#15782#15863#0" expanded="false" />
-            <element signature="e#15899#16049#0" expanded="false" />
-            <element signature="e#16089#16116#0" expanded="false" />
-            <element signature="e#16173#16403#0" expanded="false" />
-            <element signature="e#16465#16859#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/monoplex/centrality.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#1012#2191#0" expanded="false" />
-            <element signature="e#2239#4229#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/utils/netutils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="35" column="57" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="57" />
+          <caret line="71" column="12" selection-start-line="71" selection-start-column="12" selection-end-line="71" selection-end-column="12" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/multiplex/interdependence.py">
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.2292683">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="17" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="12" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/centrality.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.040133778">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4013378">
+          <caret line="10" column="44" selection-start-line="10" selection-start-column="44" selection-end-line="10" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/epidemic/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="20" selection-start-line="0" selection-start-column="20" selection-end-line="0" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/monoplex/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.02561366">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/multiplex/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.02561366">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/utils/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.02561366">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.virtualenvs/network/local/lib/python2.7/site-packages/numpy/core/fromnumeric.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3697997">
+          <caret line="1797" column="0" selection-start-line="1797" selection-start-column="0" selection-end-line="1797" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nettools/multiplex/interdependence.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5394525">
+          <caret line="163" column="0" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#357#1221#0" expanded="false" />
+            <element signature="e#1288#2622#0" expanded="false" />
+            <element signature="e#2682#3784#0" expanded="false" />
+            <element signature="e#3884#4837#0" expanded="false" />
+            <element signature="e#4906#6138#0" expanded="false" />
+            <element signature="e#6208#6949#0" expanded="false" />
+            <element signature="e#7040#7949#0" expanded="false" />
+            <element signature="e#8028#8417#0" expanded="false" />
+            <element signature="e#8492#9608#0" expanded="false" />
+            <element signature="e#9671#10446#0" expanded="false" />
+            <element signature="e#10508#10994#0" expanded="false" />
+            <element signature="e#11046#11452#0" expanded="false" />
+            <element signature="e#11515#11795#0" expanded="false" />
+            <element signature="e#11839#11926#0" expanded="false" />
+            <element signature="e#11968#12109#0" expanded="false" />
           </folding>
         </state>
       </provider>

@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import scipy.stats as stats
 import multiprocessing as mp
-from scripts.utils.netutils import load_multinet_by_name
+from ..utils.netutils import load_multinet_by_name
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,7 +31,6 @@ class InterMeasures(object):
         # Aggregate network
         self.agg_net = self.aggregate(self.network_graph_np)
         self.agg_onet = self.aggregate(self.network_weights_np)
-        self.one_triad_clustering_pool(self.network_graph_np)
 
     @staticmethod
     def one_triad_clustering(network):
@@ -272,6 +271,31 @@ class InterMeasures(object):
         """
         agg_net = np.sum(net, axis=2)
         return agg_net
+
+    def get_network_adjacency(self, weighted=False):
+        """
+        Method return adjacency matrix for analyzed network
+
+        :param weighted: If weighted or not (bool)
+        :return: Adjacency matrix
+        """
+        if weighted:
+            return self.network_weights_np
+        else:
+            return self.network_graph_np
+
+    def get_network_pymnet(self):
+        """
+        Method return pymnet network
+        """
+        return self.loaded_network
+
+    def get_network_info(self):
+        """
+        Method return mapping arrays and information about layers
+        """
+        return self.id2node, self.node2id, self.layers_attr
+
 
 if __name__ == '__main__':
     im = InterMeasures('london')
