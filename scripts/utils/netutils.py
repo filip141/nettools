@@ -23,6 +23,11 @@ DB_LIST = {
         "files": ("fao_trade_layers.txt", "fao_trade_multiplex.edges", "fao_trade_nodes.txt"),
         "directed": True
     },
+    "EUAir": {
+        "files": ("EUAirTransportation_layers.txt",
+                  "EUAirTransportation_multiplex.edges", "EUAirTransportation_nodes.txt"),
+        "directed": False
+    },
 }
 
 
