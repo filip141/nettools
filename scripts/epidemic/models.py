@@ -8,6 +8,29 @@ from abc import ABCMeta, abstractmethod
 plt.ion()
 
 
+def visualize_epidemic(vnetwork, net_attrs):
+    """
+        Visualize network using Multilayer Network Library function *draw*.
+
+        :param vnetwork: Visualized network
+        :param net_attrs: Network attributes
+        :return: Node votes (dict)
+    """
+    # Colour nodes
+    colours = {}
+    for node, attrs in net_attrs.items():
+        if attrs[1]['i']:
+            n_colour = 'r'
+        elif attrs[1]['s']:
+            n_colour = 'g'
+        else:
+            n_colour = 'b'
+        colours[attrs[0]] = n_colour
+    draw(vnetwork, nodeColorDict=colours, show=False, layout="circular")
+    plt.pause(2)
+    return None
+
+
 class EpidemicModel(object):
     __metaclass__ = ABCMeta
 
@@ -267,7 +290,10 @@ class SIRMultilayer(EpidemicModel):
 
     def get_interconnected(self, node):
         node_cords = self.network_attrs[node][0]
-        return [int_nd for int_nd in self.network._net[node_cords].keys() if node_cords[0] != int_nd[0]]
+        if isinstance(self.network, MultiplexNetwork):
+            return [[(node_cords[0], layer), None] for layer in self.network._nodeToLayers[node_cords[0]]]
+        else:
+            return [int_nd for int_nd in self.network._net[node_cords].keys() if node_cords[0] != int_nd[0]]
 
     def one_epoch(self):
         # Iterate over infected
@@ -297,7 +323,7 @@ class SIRMultilayer(EpidemicModel):
                     # Recover inter connected node
                     rc_inter = random.uniform(0, 1)
                     if self.inter_rec > rc_inter and i_node != node:
-                        self.recover_node(i_node)
+                        self.recover_node(self.node2ind[str(i_node)])
 
     def recover_node(self, node):
         self.network_attrs[node][1]['r'] = 1
@@ -317,22 +343,12 @@ class SIRMultilayer(EpidemicModel):
     def get_num(self, state):
         return len(self.get(state))
 
-    def run(self, epochs=200):
+    def run(self, epochs=200, visualize=True):
         # Iterate over disease epochs
         for dt in range(0, epochs):
             self.one_epoch()
-            # Colour nodes
-            colours = {}
-            for node, attrs in self.network_attrs.items():
-                if attrs[1]['i']:
-                    n_colour = 'r'
-                elif attrs[1]['s']:
-                    n_colour = 'g'
-                else:
-                    n_colour = 'b'
-                colours[attrs[0]] = n_colour
-            draw(self.network, nodeColorDict=colours, show=False, layout="circular")
-            plt.pause(2)
+            if visualize:
+                visualize_epidemic(self.network, self.network_attrs)
 
     def epidemic_data(self, epochs=50, show=True):
         s, i, r = [], [], []
@@ -355,7 +371,7 @@ class SIRMultilayer(EpidemicModel):
 
 class SISMultilayer(EpidemicModel):
 
-    def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4, inter_beta=0.9):
+    def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4, inter_beta=0.9, inter_rec=0.9):
         super(SISMultilayer, self).__init__()
         # If seed node is None take random
         network_adj = network.get_supra_adjacency_matrix()
@@ -364,6 +380,7 @@ class SISMultilayer(EpidemicModel):
         # Process properties
         self.mu = mu
         self.beta = beta
+        self.inter_rec = inter_rec
         self.inter_beta = inter_beta
         self.states = ('s', 'i')
 
@@ -391,7 +408,10 @@ class SISMultilayer(EpidemicModel):
 
     def get_interconnected(self, node):
         node_cords = self.network_attrs[node][0]
-        return [int_nd for int_nd in self.network._net[node_cords].keys() if node_cords[0] != int_nd[0]]
+        if isinstance(self.network, MultiplexNetwork):
+            return [[(node_cords[0], layer), None] for layer in self.network._nodeToLayers[node_cords[0]]]
+        else:
+            return [int_nd for int_nd in self.network._net[node_cords].keys() if node_cords[0] != int_nd[0]]
 
     def one_epoch(self):
         # Iterate over infected
@@ -416,11 +436,16 @@ class SISMultilayer(EpidemicModel):
             rc_spread = random.uniform(0, 1)
             if self.mu > rc_spread:
                 self.recover_node(node)
+                inter_nodes = self.get_interconnected(node)
+                for i_node, attr in inter_nodes:
+                    # Recover inter connected node
+                    rc_inter = random.uniform(0, 1)
+                    if self.inter_rec > rc_inter and i_node != node:
+                        self.recover_node(self.node2ind[str(i_node)])
 
     def recover_node(self, node):
-        self.network_attrs[node][1]['r'] = 1
         self.network_attrs[node][1]['i'] = 0
-        self.network_attrs[node][1]['s'] = 0
+        self.network_attrs[node][1]['s'] = 1
 
     def infect_node(self, node):
         self.network_attrs[node][1]['s'] = 0
@@ -435,20 +460,13 @@ class SISMultilayer(EpidemicModel):
     def get_num(self, state):
         return len(self.get(state))
 
-    def run(self, epochs=200):
+    def run(self, epochs=200, visualize=True):
         # Iterate over disease epochs
         for dt in range(0, epochs):
             self.one_epoch()
-            # Colour nodes
-            colours = {}
-            for node, attrs in self.network_attrs.items():
-                if attrs[1]['s']:
-                    n_colour = 'g'
-                else:
-                    n_colour = 'r'
-                colours[attrs[0]] = n_colour
-            draw(self.network, nodeColorDict=colours, show=False, layout="circular")
-            plt.pause(2)
+            # Visualize epidemic process
+            if visualize:
+                visualize_epidemic(self.network, self.network_attrs)
 
     def epidemic_data(self, epochs=50, show=False):
         s, i = [], []
@@ -467,36 +485,7 @@ class SISMultilayer(EpidemicModel):
 
 
 if __name__ == '__main__':
-    from scripts.monoplex.centrality import CentralityMeasure
-    network = er_multilayer(300, 3, p=0.06)
-    # Closeness
-    import networkx as netx
-    an = aggregate(network, 1)
-    cm = CentralityMeasure(an)
-    # netx.draw_networkx(cm.network_graph)
-    bb = cm.supernode_rank()
-    # netx.draw_circular(bb, node_size=20)
-    # plt.show()
-    max_node = np.argmax(bb.values())
-    seed = network.get_supra_adjacency_matrix()[1][max_node]
-    sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
-    print(sir.epidemic_data(epochs=3, show=False)[1][-1])
-    # # Closeness
-    # bb = nx.betweenness_centrality(aggregate(network, 1))
-    # max_node = np.argmax(bb.values())
-    # seed = network.get_supra_adjacency_matrix()[1][max_node]
-    # sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
-    # print(sir.epidemic_data(epochs=3, show=False)[1][-1])
-    # # Eigen
-    # bb = nx.eigenvector_centrality_numpy(aggregate(network, 1))
-    # max_node = np.argmax(bb.values())
-    # seed = network.get_supra_adjacency_matrix()[1][max_node]
-    # sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
-    # print(sir.epidemic_data(epochs=3, show=False)[1][-1])
-    # # Eigen
-    # bb = nx.pagerank_numpy(aggregate(network, 1))
-    # max_node = np.argmax(bb.values())
-    # seed = network.get_supra_adjacency_matrix()[1][max_node]
-    # sir = SISMultilayer(network, beta=0.01, mu=0.005, inter_beta=0.5, seed_nodes=[seed])
-    # print(sir.epidemic_data(epochs=3, show=False)[1][-1])
+    cnet = er([[y for y in range(20)] for x in range(3)], p=0.3, edges=None)
+    sir = SIRMultilayer(cnet, beta=0.4, mu=0.1, inter_beta=1.0, inter_rec=1.0)
+    sir.run(epochs=50, visualize=True)
 

@@ -5,8 +5,13 @@ from scripts.utils.netutils import NX_CENTRALITY
 
 
 class CentralityMeasure(object):
-    def __init__(self, graph):
-        self.network_graph = nx.Graph(graph._net)
+    def __init__(self, graph, from_numpy=False):
+        # Load graph
+        if from_numpy:
+            self.network_graph = nx.from_numpy_matrix(graph)
+        else:
+            self.network_graph = nx.Graph(graph._net)
+        # Number of nodes
         self.network_nodes = self.network_graph.nodes()
 
     def network_cn(self, method):
