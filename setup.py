@@ -8,5 +8,5 @@ setup(
     license='',
     author='filip141',
     author_email='201134@student.pwr.wroc.pl',
-    description='Tools for analyzing multiplex networks.'
+    description='Tools for analyzing multiplex networks.', requires=['numpy', 'networkx', 'matplotlib', 'scipy']
 )

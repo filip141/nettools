@@ -1,5 +1,6 @@
 import os
 import pymnet
+import random
 import numpy as np
 
 NX_CENTRALITY = {
@@ -92,6 +93,29 @@ def load_multinet(path_layers, path_edges, path_nodes, directed=False):
                 network_graph_np[node2id[ed_t], node2id[ed_o], int(l_nr) - 1] = 1
                 network_weights_np[node2id[ed_t], node2id[ed_o], int(l_nr) - 1] = float(weight)
     return loaded_network, network_graph_np, network_weights_np, mappings, layers_attr
+
+
+def sample_from_dist(dist, n_samples=1):
+    # Compute cumsum
+    samples = []
+    cum_sum = np.cumsum(dist, axis=0)
+    iteration = 0
+    while iteration < n_samples:
+        rnd = random.uniform(0, 1)
+        # If small than first
+        if rnd < cum_sum[0]:
+            samples.append(0)
+            continue
+        # for others
+        counter = 0
+        while rnd >= cum_sum[counter]:
+            counter += 1
+        # No repeats
+        if counter in samples:
+            continue
+        samples.append(counter)
+        iteration += 1
+    return samples
 
 
 if __name__ == '__main__':

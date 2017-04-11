@@ -163,7 +163,7 @@ class InterMeasures(object):
         return (1/float(net_size[-1])) * np.sum(layer_scores), layer_scores
 
     @staticmethod
-    def degree_layer_dependence(network, weight_network=None):
+    def link_layer_dependence(network, weight_network=None):
         """
         Method generates matrix with [layer x layer] elements,
         each element contains probability of finding link at test layer
@@ -179,12 +179,11 @@ class InterMeasures(object):
         result = np.zeros((layers_num, layers_num))
         for row_l_idx in range(layers_num):
             for row_ul_idx in range(layers_num):
-                result[row_l_idx, row_ul_idx] = InterMeasures.degree_conditional(weight_network[:, :, row_l_idx],
-                                                                                 network[:, :, row_ul_idx])
+                result[row_l_idx, row_ul_idx] = InterMeasures.degree_conditional(network[:, :, row_ul_idx])
         return result
 
     @staticmethod
-    def degree_conditional(ref_layer, test_layer):
+    def link_conditional(ref_layer, test_layer):
         """
         Probability of finding a link at layer ref_layer
         given the presence of an edge between the same nodes at
@@ -258,6 +257,22 @@ class InterMeasures(object):
         else:
             degree_mat = np.transpose(np.sum(net, axis=1), (1, 0))
             return degree_mat
+
+    @staticmethod
+    def degree_conditional(ref_layer, test_layer):
+        """
+        Probability of finding same degree at layer ref_layer
+        given the presence node with examined degree at
+        layer test_layer.
+
+        :param ref_layer: reference layer,
+        :param test_layer: test layer,
+        :return: Probability of finding a link on test layer given reference.
+        """
+        deg_dist_ref = InterMeasures.degree_distribution(ref_layer)
+        deg_dist_test = InterMeasures.degree_distribution(test_layer)
+        equal_degrees = np.sum(deg_dist_ref == deg_dist_test)
+        return equal_degrees / float(deg_dist_ref.shape[0])
 
     @staticmethod
     def aggregate(net):
