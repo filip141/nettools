@@ -78,12 +78,13 @@ class NetworkGenerator(object):
         np.fill_diagonal(er_net, 0)
         er_net *= np.tri(*er_net.shape)
         er_net += er_net.T
-        er_net[er_net > p] = 1
-        er_net[er_net < p] = 0
-        return Network(er_net, n_type="ER")
+        result = er_net.copy()
+        result[er_net < p] = 1
+        result[er_net > p] = 0
+        return Network(result, n_type="ER")
 
 
 if __name__ == '__main__':
     ng = NetworkGenerator(1000)
-    net = ng.ba_network()
+    net = ng.er_network()
     net.plot_degree_dist()

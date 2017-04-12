@@ -9,7 +9,7 @@ class MultiplexNetwork(object):
 
     def __init__(self, network, weights_layer=None, n_types=None, weighted=False):
         if n_types is None:
-            self.type = ["ER", "ER"]
+            self.type = []
         self.network = network
         self.network_weighted = weights_layer
         self.weighted = weighted
@@ -45,7 +45,8 @@ class MultiplexConstructor(object):
             network_w = network_obj.network_weighted.copy()
         not_norm_dist = np.sum(network, axis=1)
         degree_dist = not_norm_dist / np.sum(not_norm_dist)
-        for rs in range(rsteps):
+        rcounter = 0
+        while rcounter < rsteps:
             dist_smpl = sample_from_dist(degree_dist, n_samples=2)
             # Take random connection from first hub
             nz_0 = np.nonzero(network[dist_smpl[0]])
@@ -59,6 +60,10 @@ class MultiplexConstructor(object):
             nz_rand_1 = random.randint(0, nz_1[0].shape[0] - 1)
             # noinspection PyUnresolvedReferences
             elem_1 = nz_1[0][nz_rand_1]
+
+            # Check for existence
+            if network[dist_smpl[1], elem_0] == 1 or network[dist_smpl[0], elem_1] == 1:
+                continue
             # Rewire
             network[dist_smpl[0], elem_0] = 0
             network[dist_smpl[1], elem_0] = 1
@@ -74,6 +79,7 @@ class MultiplexConstructor(object):
                     network[dist_smpl[0], elem_0]
                 network_w[dist_smpl[0], elem_0] = 0
                 network_w[dist_smpl[1], elem_1] = 0
+            rcounter += 1
         return Network(network, weights_layer=network_w,
                        n_type=network_obj.type, weighted=network_obj.weighted)
 

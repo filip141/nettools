@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 import scipy.stats as stats
 import multiprocessing as mp
-from ..utils.netutils import load_multinet_by_name
+from nettools.utils.netutils import load_multinet_by_name
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,6 +31,7 @@ class InterMeasures(object):
         # Aggregate network
         self.agg_net = self.aggregate(self.network_graph_np)
         self.agg_onet = self.aggregate(self.network_weights_np)
+        self.participation_coeff(self.network_graph_np, self.agg_net)
 
     @staticmethod
     def one_triad_clustering(network):
@@ -179,7 +180,8 @@ class InterMeasures(object):
         result = np.zeros((layers_num, layers_num))
         for row_l_idx in range(layers_num):
             for row_ul_idx in range(layers_num):
-                result[row_l_idx, row_ul_idx] = InterMeasures.degree_conditional(network[:, :, row_ul_idx])
+                result[row_l_idx, row_ul_idx] = InterMeasures.link_conditional(network[:, :, row_l_idx],
+                                                                               network[:, :, row_ul_idx])
         return result
 
     @staticmethod
@@ -220,6 +222,28 @@ class InterMeasures(object):
         d_net = (np.sum(network, axis=1) / agg_rep)**2
         d_net = np.nan_to_num(d_net)
         return (net_size[-1] / (net_size[-1] - 1)) * (1 - np.sum(d_net, axis=1))
+
+    @staticmethod
+    def entropy_coeff(network, agg_net):
+        """
+        Participation coefficient:
+        "Metrics for the analysis of multiplex networks" Battiston et. al.
+        Entropy measure introduced for measuring participation in each layer,
+        Entropy is 0 when node participate only in one layer, Entropy attain maximum
+        when node degree is equal distributed between layers.
+
+        :param network: Network adjacency matrix,
+        :param agg_net: Aggregated adjacency matrix,
+        :return: Entropy coefficient value.
+        """
+        net_size = network.shape
+
+        # Reshape aggregated network
+        agg_rep = np.repeat(np.sum(agg_net, axis=1)[:, np.newaxis], net_size[-1], axis=1)
+
+        # Compute entropy
+        e_net = (np.sum(network, axis=1) / agg_rep) * np.log(np.sum(network, axis=1) / agg_rep)
+        return -np.sum(e_net, axis=1)
 
     @staticmethod
     def kendal_corr(distribution):
@@ -313,4 +337,17 @@ class InterMeasures(object):
 
 
 if __name__ == '__main__':
-    im = InterMeasures('london')
+    # im = InterMeasures('london')
+    from nettools.monoplex import NetworkGenerator
+    from nettools.multiplex import MultiplexConstructor
+    ng = NetworkGenerator(300)
+    network_ba_1 = ng.ba_network(m0=15)
+    network_ba_2 = ng.ba_network(m0=20)
+    network_er_1 = ng.er_network(p=0.1)
+    network_er_2 = ng.er_network(p=0.3)
+    mc = MultiplexConstructor()
+    multi_er_er = mc.construct(network_er_1, network_er_2)
+    multi_er_ba = mc.construct(network_er_1, network_ba_1)
+    multi_ba_ba_nc = mc.construct(network_ba_2, network_ba_1)
+    agg_net_baba = InterMeasures.aggregate(multi_ba_ba_nc.network)
+    pc_erer = InterMeasures.entropy_coeff(multi_ba_ba_nc.network, agg_net_baba)
