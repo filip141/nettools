@@ -73,6 +73,35 @@ class NetworkGenerator(object):
                 ba_net[rand_sample, nnode] = 1
         return Network(ba_net, n_type="BA")
 
+    def bb_network(self, m0=3, fitness=None):
+        bb_net = np.zeros((self.num_nodes, self.num_nodes))
+
+        # Initialize fitness if None
+        if fitness is None:
+            fitness = np.random.uniform(0, 1, size=(self.num_nodes,))
+
+        # Initialize graph
+        for m in range(m0):
+            rand_conn_h = random.randint(0, self.num_nodes - 1)
+            rand_conn_w = random.randint(0, self.num_nodes - 1)
+            bb_net[rand_conn_h, rand_conn_w] = 1
+            bb_net[rand_conn_w, rand_conn_h] = 1
+
+        # Simulate growth process
+        for nnode in range(self.num_nodes):
+            # Omit earlier initialized nodes
+            if np.sum(bb_net[nnode]) > 0:
+                continue
+
+            not_norm_dist = np.sum(bb_net, axis=1)
+            degree_dist = (not_norm_dist / np.sum(not_norm_dist)) * fitness
+            degree_dist = degree_dist / np.sum(degree_dist)
+            dist_samples = sample_from_dist(degree_dist, n_samples=m0)
+            for rand_sample in dist_samples:
+                bb_net[nnode, rand_sample] = 1
+                bb_net[rand_sample, nnode] = 1
+        return Network(bb_net, n_type="BB")
+
     def er_network(self, p=0.5):
         er_net = np.random.uniform(0, 1, size=(self.num_nodes, self.num_nodes))
         np.fill_diagonal(er_net, 0)
@@ -86,5 +115,5 @@ class NetworkGenerator(object):
 
 if __name__ == '__main__':
     ng = NetworkGenerator(1000)
-    net = ng.er_network()
-    net.plot_degree_dist()
+    net = ng.bb_network()
+    net.plot_loglog()

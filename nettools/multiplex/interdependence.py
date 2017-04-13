@@ -1,5 +1,7 @@
+import types
 import pymnet
 import logging
+import copy_reg
 import numpy as np
 import networkx as nx
 import scipy.stats as stats
@@ -8,6 +10,15 @@ from nettools.utils.netutils import load_multinet_by_name
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def _pickle_method(m):
+    if m.im_self is None:
+        return getattr, (m.im_class, m.im_func.func_name)
+    else:
+        return getattr, (m.im_self, m.im_func.func_name)
+
+copy_reg.pickle(types.MethodType, _pickle_method)
 
 
 class InterMeasures(object):
@@ -63,59 +74,41 @@ class InterMeasures(object):
         result = np.nan_to_num(result)
         return result
 
-    def one_triad_clustering_pool(self, network):
+    def one_triad_clustering_pool(self):
         """
         Clustering coefficient is very computational efficient method,
         for that reason method uses multiprocess library for computation.
         Using this method can improve performance but only when reasonably small
-        number of nodes is in network (+- < 1000).
+        number of nodes is in network.
 
-        :param network: Network adjacency matrix,
         :return: One triad clustering coefficient.
         """
-        output = mp.Queue()
-        # Initialize processes
-        processes = [mp.Process(target=self.worker_method,
-                                args=(network, idx, output)) for idx in range(network.shape[0])]
-        # Run processes
-        for p in processes:
-            p.start()
+        number_of_processors = mp.cpu_count()
+        pool = mp.Pool(number_of_processors)
+        results = pool.map(self.worker_method, range(self.network_graph_np.shape[0]))
 
-        # Exit the completed processes
-        for p in processes:
-            p.join()
-
-        # Get process results from the output queue
-        results = np.array([output.get() for p in processes])
-        k_dist = np.sum(network, axis=1)
-        k_dist = np.sum(k_dist * (k_dist - 1), axis=1)
-        results = results / k_dist
-        results = np.nan_to_num(results)
         # Normalize
-        return results
+        return [x[0] for x in sorted(results, key=lambda tup: tup[1])]
 
     # noinspection PyMethodMayBeStatic
-    def worker_method(self, network, idx, output):
+    def worker_method(self, idx):
         """
         Worker method for multiprocess pool.
 
-        :param network: Network adjacency matrix,
         :param idx: clustering coefficient index/ node index [i]
-        :param output: Process queue.
         """
-        layers_num = network.shape[-1]
+        layers_num = self.network_graph_np.shape[-1]
         results = 0
         for row_l_idx in range(layers_num):
             for row_ul_idx in range(layers_num):
-                for j in range(network.shape[0]):
-                    for m in range(network.shape[0]):
+                for j in range(self.network_graph_np.shape[0]):
+                    for m in range(self.network_graph_np.shape[0]):
                         if row_l_idx != row_ul_idx and idx != m:
-                            if np.all([network[idx, j, row_l_idx],
-                                       network[j, m, row_ul_idx], network[m, idx, row_l_idx]]):
-                                results += network[idx, j, row_l_idx] * \
-                                           network[j, m, row_ul_idx] * network[m, idx, row_l_idx]
+                            results += self.network_graph_np[idx, j, row_l_idx] * \
+                                       self.network_graph_np[j, m, row_ul_idx] * \
+                                       self.network_graph_np[m, idx, row_l_idx]
         logging.info("Computed for i: {}".format(idx))
-        output.put(results)
+        return results, idx
 
     @staticmethod
     def interdependence(network, layer):
