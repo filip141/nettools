@@ -175,7 +175,7 @@ class InterMeasures(object):
         for row_l_idx in range(layers_num):
             for row_ul_idx in range(layers_num):
                 result[row_l_idx, row_ul_idx] = InterMeasures.link_conditional(network[:, :, row_l_idx],
-                                                                               network[:, :, row_ul_idx])
+                                                                               weight_network[:, :, row_ul_idx])
         return result
 
     @staticmethod
