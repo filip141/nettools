@@ -42,7 +42,6 @@ class InterMeasures(object):
         # Aggregate network
         self.agg_net = self.aggregate(self.network_graph_np)
         self.agg_onet = self.aggregate(self.network_weights_np)
-        self.participation_coeff(self.network_graph_np, self.agg_net)
 
     @staticmethod
     def one_triad_clustering(network):
@@ -86,9 +85,11 @@ class InterMeasures(object):
         number_of_processors = mp.cpu_count()
         pool = mp.Pool(number_of_processors)
         results = pool.map(self.worker_method, range(self.network_graph_np.shape[0]))
-
+        results = np.array([x[0] for x in sorted(results, key=lambda tup: tup[1])])
         # Normalize
-        return [x[0] for x in sorted(results, key=lambda tup: tup[1])]
+        k_deg = np.sum(self.network_graph_np, axis=1)
+        results = results / np.sum(k_deg * (k_deg - 1), axis=1)
+        return results
 
     # noinspection PyMethodMayBeStatic
     def worker_method(self, idx):
@@ -342,5 +343,7 @@ if __name__ == '__main__':
     multi_er_er = mc.construct(network_er_1, network_er_2)
     multi_er_ba = mc.construct(network_er_1, network_ba_1)
     multi_ba_ba_nc = mc.construct(network_ba_2, network_ba_1)
-    agg_net_baba = InterMeasures.aggregate(multi_ba_ba_nc.network)
-    pc_erer = InterMeasures.entropy_coeff(multi_ba_ba_nc.network, agg_net_baba)
+    im = InterMeasures()
+    im.network_graph_np = multi_er_er.network
+    im.network_weights_np = multi_er_er.network
+    cluster_nodes = im.one_triad_clustering_pool()
