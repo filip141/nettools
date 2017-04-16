@@ -5,9 +5,9 @@ from ..utils.netutils import NX_CENTRALITY
 
 
 class CentralityMeasure(object):
-    def __init__(self, graph, pymnet=True):
+    def __init__(self, graph, pymnet=False):
         # Load graph
-        if pymnet:
+        if not pymnet:
             self.network_graph = nx.from_numpy_matrix(graph)
         else:
             self.network_graph = nx.Graph(graph._net)

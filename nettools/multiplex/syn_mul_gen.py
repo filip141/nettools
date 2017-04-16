@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import networkx as nx
 from nettools.utils import sample_from_dist
 from nettools.multiplex import InterMeasures
 from nettools.monoplex import NetworkGenerator, Network
@@ -13,6 +14,14 @@ class MultiplexNetwork(object):
         self.network = network
         self.network_weighted = weights_layer
         self.weighted = weighted
+
+    def giant_connected_component(self):
+        agg_net = np.sum(self.network, axis=2)
+        agg_net[agg_net > 0] = 1
+        giant = max(nx.connected_component_subgraphs(
+            nx.from_numpy_matrix(agg_net)
+        ), key=len)
+        return giant.node.keys()
 
 
 class MultiplexConstructor(object):
@@ -91,5 +100,6 @@ if __name__ == '__main__':
     ba3 = ng.ba_network()
     mc = MultiplexConstructor()
     test_net = mc.rewire_hubs(ba1, rsteps=100).network
-    print(InterMeasures.degree_conditional(ba1.network, test_net))
-    # mc.construct(ba1, mc.rewire_hubs(ba2), mc.rewire_hubs(ba3))
+    # print(InterMeasures.degree_conditional(ba1.network, test_net))
+    mnet = mc.construct(ba1, mc.rewire_hubs(ba2), mc.rewire_hubs(ba3))
+    print(mnet.giant_connected_component())

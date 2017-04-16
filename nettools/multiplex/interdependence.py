@@ -303,6 +303,7 @@ class InterMeasures(object):
         :return: Aggregated network [nodes x nodes]
         """
         agg_net = np.sum(net, axis=2)
+        agg_net[agg_net > 0] = 1
         return agg_net
 
     def get_network_adjacency(self, weighted=False):

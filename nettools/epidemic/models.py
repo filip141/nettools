@@ -522,7 +522,7 @@ class SIRMultiplex(EpidemicModel):
         if isinstance(network, MultiplexNetwork):
             network = network.network
         # If seed node is None take random
-        if seed_nodes is None:
+        if not seed_nodes:
             seed_n = random.randint(0, network.shape[0] - 1)
             seed_l = random.randint(0, network.shape[2] - 1)
             seed_nodes = [(seed_n, seed_l)]
@@ -544,7 +544,11 @@ class SIRMultiplex(EpidemicModel):
 
         # Infect seed nodes
         for seed in seed_nodes:
-            self.infect_node(seed)
+            if isinstance(seed, int):
+                for layer_idx in range(self.network_size[2]):
+                    self.infect_node((seed, layer_idx))
+            else:
+                self.infect_node(seed)
 
     def recover_node(self, node):
         if self.network_state[node] == self.state2id['i']:
@@ -640,10 +644,11 @@ class SISMultiplex(EpidemicModel):
         if isinstance(network, MultiplexNetwork):
             network = network.network
         # If seed node is None take random
-        if seed_nodes is None:
+        if not seed_nodes:
             seed_n = random.randint(0, network.shape[0] - 1)
             seed_l = random.randint(0, network.shape[2] - 1)
             seed_nodes = [(seed_n, seed_l)]
+
         # Process properties
         self.mu = mu
         self.beta = beta
@@ -662,7 +667,11 @@ class SISMultiplex(EpidemicModel):
 
         # Infect seed nodes
         for seed in seed_nodes:
-            self.infect_node(seed)
+            if isinstance(seed, int):
+                for layer_idx in range(self.network_size[2]):
+                    self.infect_node((seed, layer_idx))
+            else:
+                self.infect_node(seed)
 
     def recover_node(self, node):
         if self.network_state[node] == self.state2id['i']:
@@ -714,7 +723,7 @@ class SISMultiplex(EpidemicModel):
     def get_num(self, state):
         return len(self.get_by_state(state)[0])
 
-    def run(self, epochs=200, visualize=True, layers=None, labels=False):
+    def run(self, epochs=200, visualize=False, layers=None, labels=False):
         plt.ion()
         # Iterate over disease epochs
         for dt in range(0, epochs):
