@@ -98,6 +98,7 @@ class NetworkGenerator(object):
             for rand_sample in dist_samples:
                 ba_net[nnode, rand_sample] = 1
                 ba_net[rand_sample, nnode] = 1
+        np.fill_diagonal(ba_net, 0)
         return Network(ba_net, n_type="BA")
 
     def bb_network(self, m0=3, fitness=None):
@@ -136,6 +137,7 @@ class NetworkGenerator(object):
             for rand_sample in dist_samples:
                 bb_net[nnode, rand_sample] = 1
                 bb_net[rand_sample, nnode] = 1
+        np.fill_diagonal(bb_net, 0)
         return Network(bb_net, n_type="BB")
 
     def er_network(self, p=0.5):
@@ -147,12 +149,12 @@ class NetworkGenerator(object):
         :return: Network object, containing information about network (adjacency, type)
         """
         er_net = np.random.uniform(0, 1, size=(self.num_nodes, self.num_nodes))
-        np.fill_diagonal(er_net, 0)
         er_net *= np.tri(*er_net.shape)
         er_net += er_net.T
         result = er_net.copy()
         result[er_net < p] = 1
         result[er_net > p] = 0
+        np.fill_diagonal(result, 0)
         return Network(result, n_type="ER")
 
 

@@ -2,7 +2,6 @@ import random
 import numpy as np
 import networkx as nx
 from nettools.utils import sample_from_dist
-from nettools.multiplex import InterMeasures
 from nettools.monoplex import NetworkGenerator, Network
 
 
@@ -22,6 +21,13 @@ class MultiplexNetwork(object):
             nx.from_numpy_matrix(agg_net)
         ), key=len)
         return giant.node.keys()
+
+    def remove_node(self, rmnode):
+        self.network[rmnode, :, :] = 0
+        self.network[:, rmnode, :] = 0
+
+    def get_nodes_num(self):
+        return self.network.shape[0]
 
 
 class MultiplexConstructor(object):
@@ -102,4 +108,4 @@ if __name__ == '__main__':
     test_net = mc.rewire_hubs(ba1, rsteps=100).network
     # print(InterMeasures.degree_conditional(ba1.network, test_net))
     mnet = mc.construct(ba1, mc.rewire_hubs(ba2), mc.rewire_hubs(ba3))
-    print(mnet.giant_connected_component())
+    mnet.remove_node(1)
