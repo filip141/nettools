@@ -40,12 +40,13 @@ class Percolation(object):
                 new_net.remove_node(rmnode)
         return len(new_net.giant_connected_component())
 
-    def run(self, visualize=False, npoints=100):
+    def run(self, visualize=False, npoints=100, log=False):
         gcc_nodes = []
         for proba_nmul in range(0, npoints):
             probability = proba_nmul / float(npoints)
             gcc_nodes.append(self.remove_nodes(probability))
-            logger.info("Nodes in gcc: {}, probability: {}".format(gcc_nodes[-1], probability))
+            if log:
+                logger.info("Nodes in gcc: {}, probability: {}".format(gcc_nodes[-1], probability))
         # Normalize
         nodes_num = float(self.network.network.shape[0])
         gcc_nodes = np.array(gcc_nodes) / nodes_num
@@ -67,12 +68,12 @@ if __name__ == '__main__':
     ng = NetworkGenerator(nodes=nodes_nm)
     # ba1 = ng.bb_network(m0=1)
     # ba2 = ng.bb_network(m0=1)
-    er1 = ng.er_network(p=4.0 / float(nodes_nm))
-    er2 = ng.er_network(p=4.0 / float(nodes_nm))
+    er1 = ng.er_network(p=2.5 / float(nodes_nm))
+    er2 = ng.er_network(p=2.5 / float(nodes_nm))
     mc = MultiplexConstructor()
     # bac = mc.rewire_hubs(ba1, rsteps=2000)
     mnet = mc.construct(er1, er2)
     per = Percolation(mnet)
-    per.run(visualize=True, npoints=3000)
+    per.run(visualize=True, npoints=3000, log=True)
 
 
