@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from pymnet import *
+# from pymnet import *
 import networkx as nx
 import matplotlib.pyplot as plt
 from abc import ABCMeta, abstractmethod
@@ -33,6 +33,7 @@ def visualize_epidemic_image_style(vnetwork, net_states, layers=None, labels=Fal
     """
         Visualize network in image style, [nodes x nodes x layers]
 
+        :param pause: How many seconds wait for next plot
         :param vnetwork: Visualized network
         :param net_states: Network states
         :param layers: which layers should be plot
@@ -761,7 +762,6 @@ class SISMultiplex(EpidemicModel):
 if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
     from nettools.multiplex import MultiplexConstructor
-
     ng = NetworkGenerator(nodes=200)
     # ba2 = ng.ba_network()
     # er1 = ng.er_network(p=4.0 / 200.0)
@@ -771,27 +771,27 @@ if __name__ == '__main__':
     # cnet = er([[y for y in range(20)] for x in range(3)], p=0.3, edges=None)
     from nettools.monoplex import CentralityMeasure
     from nettools.utils import NX_CENTRALITY
-
+    plt.ion()
     # Clear method scores
     method_scores = {}
     for method in NX_CENTRALITY.keys():
         method_scores[method] = 0
-
-    for rl_idx in range(20):
+    print("Analysing spreading for BA Network")
+    for rl_idx in range(50):
         # Examine centrality
         result_counter = 0
         method_list = []
-        results_matrix = np.zeros((9, 50))
+        results_matrix = np.zeros((8, 50))
         for idx, method in enumerate(NX_CENTRALITY.keys()):
             avg_results = np.zeros((50, 50))
+            if method == 'supernode':
+                continue
             method_list.append(method)
-            # if method == 'supernode':
-            #     continue
             for n_time in range(0, 50):
-                ba1 = ng.ba_network(m0=2)
-                # er1 = ng.er_network(p=4.0 / 200.0)
-                mn = mc.construct(ba1)
-                cn = CentralityMeasure(ba1.network)
+                # ba1 = ng.ba_network(m0=2)
+                er1 = ng.er_network(p=4.0 / 200.0)
+                mn = mc.construct(er1)
+                cn = CentralityMeasure(er1.network)
                 results_cn = cn.network_cn(method)
                 if method == 'hits':
                     results_cn = results_cn[1]
@@ -804,14 +804,21 @@ if __name__ == '__main__':
             # plt.plot(np.mean(avg_results, axis=0), hold=True, label=method)
             result_counter += 1
 
-        print("Result functions completed, start voting, Number: {}, Range: {}".format(rl_idx, [30, 40]))
+        print("Result functions completed, start voting, Number: {}, Range: {}".format(rl_idx, [5, 10, 20, 30, 40]))
         # Vote
-        for point in (30, 40):
+        for point in (5, 10, 20, 30, 40):
             max_args = list(np.argsort(results_matrix[:, point])[::-1])
             vote = 9
             for mth_idx in max_args:
                 method_scores[method_list[mth_idx]] += vote
                 vote -= 1
         print(method_scores)
+        print(method_scores.values())
+        mth_val = np.array(method_scores.values())
+        mth_val_norm = mth_val / float(np.max(mth_val))
+        print(mth_val_norm)
+        # plt.bar(range(9), mth_val_norm, color='blue', hold=False)
+        # plt.grid(zorder=0)
+        # plt.pause(0.5)
     # plt.legend()
     # plt.show(True)

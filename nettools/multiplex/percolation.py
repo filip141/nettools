@@ -80,7 +80,7 @@ if __name__ == '__main__':
     # er1 = Network(nx.to_numpy_matrix(nx.erdos_renyi_graph(nodes_nm, p=4.0 / float(nodes_nm))), n_type="ER")
     # ba1 = Network(nx.to_numpy_matrix(nx.barabasi_albert_graph(nodes_nm, m=2)), n_type="BA")
     # bb1 = ng.bb_network(m0=2)
-    mnet_er = mc.construct(er1)
+    mnet_er = mc.construct(er1, ba1)
     mnet_ba = mc.construct(ba1)
     # mnet_bb = mc.construct(bb1)
     per_er = Percolation(mnet_er)
