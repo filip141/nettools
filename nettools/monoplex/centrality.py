@@ -28,6 +28,8 @@ class CentralityMeasure(object):
             return meas_mth(self.network_graph)
         elif method == 'voterank':
             return self.voterank()
+        elif method == 'supernode':
+            return self.supernode_rank()
         else:
             return None
 
@@ -73,7 +75,6 @@ class CentralityMeasure(object):
         Kitsak et. al. shown that using not connected spreaders gives better results.
 
         :param k: Number of influential spreaders (int),
-        :param f: VoteRank parameter used to decrease max spreader neighbors voting ability (float),
         :return: Node votes (dict)
         """
         part_dict = {}

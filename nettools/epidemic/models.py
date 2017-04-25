@@ -29,7 +29,7 @@ def visualize_epidemic(vnetwork, net_attrs):
     return None
 
 
-def visualize_epidemic_image_style(vnetwork, net_states, layers=None, labels=False):
+def visualize_epidemic_image_style(vnetwork, net_states, layers=None, labels=False, pause=2):
     """
         Visualize network in image style, [nodes x nodes x layers]
 
@@ -39,7 +39,7 @@ def visualize_epidemic_image_style(vnetwork, net_states, layers=None, labels=Fal
         :param labels: show node labels or not
     """
     if layers is None:
-        layers = [0,]
+        layers = [0, ]
     # Iterate over layers
     for layer in layers:
         node_colors = []
@@ -58,7 +58,7 @@ def visualize_epidemic_image_style(vnetwork, net_states, layers=None, labels=Fal
         else:
             nx.draw(nx_graph, pos=nx.spring_layout(nx_graph), node_size=20, node_color=node_colors)
         plt.hold(False)
-    plt.pause(2)
+    plt.pause(pause)
     return None
 
 
@@ -86,7 +86,6 @@ class EpidemicModel(object):
 
 
 class SIRModel(EpidemicModel):
-
     def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4):
         EpidemicModel.__init__(self)
         # If seed node is None take random
@@ -186,7 +185,6 @@ class SIRModel(EpidemicModel):
 
 
 class SISModel(EpidemicModel):
-
     def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4):
         EpidemicModel.__init__(self)
         # If seed node is None take random
@@ -283,7 +281,6 @@ class SISModel(EpidemicModel):
 
 
 class SIRMultilayerPymnet(EpidemicModel):
-
     def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4, inter_beta=0.9, inter_rec=0.3):
         super(SIRMultilayerPymnet, self).__init__()
         # If seed node is None take random
@@ -401,7 +398,6 @@ class SIRMultilayerPymnet(EpidemicModel):
 
 
 class SISMultilayerPymnet(EpidemicModel):
-
     def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4, inter_beta=0.9, inter_rec=0.9):
         super(SISMultilayerPymnet, self).__init__()
         # If seed node is None take random
@@ -516,7 +512,6 @@ class SISMultilayerPymnet(EpidemicModel):
 
 
 class SIRMultiplex(EpidemicModel):
-
     def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4, inter_beta=0.9, inter_rec=0.3):
         super(SIRMultiplex, self).__init__()
         if isinstance(network, MultiplexNetwork):
@@ -600,13 +595,17 @@ class SIRMultiplex(EpidemicModel):
     def get_num(self, state):
         return len(self.get_by_state(state)[0])
 
-    def run(self, epochs=200, visualize=True, layers=None, labels=False):
+    def run(self, epochs=200, visualize=True, layers=None, labels=False, pause=2):
         plt.ion()
+        infected_list = []
         # Iterate over disease epochs
         for dt in range(0, epochs):
             self.one_epoch()
             if visualize:
-                visualize_epidemic_image_style(self.network, self.network_state, layers=layers, labels=labels)
+                visualize_epidemic_image_style(self.network, self.network_state, layers=layers,
+                                               labels=labels, pause=pause)
+            infected_list.append(self.get_num('i') + self.get_num('r'))
+        return infected_list
 
     # noinspection PyAugmentAssignment
     def epidemic_data(self, epochs=50, show=True):
@@ -638,7 +637,6 @@ class SIRMultiplex(EpidemicModel):
 
 
 class SISMultiplex(EpidemicModel):
-
     def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4, inter_beta=0.9, inter_rec=0.3):
         super(SISMultiplex, self).__init__()
         if isinstance(network, MultiplexNetwork):
@@ -723,13 +721,17 @@ class SISMultiplex(EpidemicModel):
     def get_num(self, state):
         return len(self.get_by_state(state)[0])
 
-    def run(self, epochs=200, visualize=False, layers=None, labels=False):
+    def run(self, epochs=200, visualize=False, layers=None, labels=False, pause=2):
         plt.ion()
+        infected_list = []
         # Iterate over disease epochs
         for dt in range(0, epochs):
             self.one_epoch()
             if visualize:
-                visualize_epidemic_image_style(self.network, self.network_state, layers=layers, labels=labels)
+                visualize_epidemic_image_style(self.network, self.network_state, layers=layers,
+                                               labels=labels, pause=pause)
+            infected_list.append(self.get_num('i'))
+        return infected_list
 
     # noinspection PyAugmentAssignment
     def epidemic_data(self, epochs=50, show=True):
@@ -755,19 +757,61 @@ class SISMultiplex(EpidemicModel):
         else:
             return s, i
 
+
 if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
     from nettools.multiplex import MultiplexConstructor
-    ng = NetworkGenerator(nodes=200)
-    ba1 = ng.ba_network()
-    ba2 = ng.ba_network()
-    ba3 = ng.ba_network()
-    mc = MultiplexConstructor()
-    test_net = mc.rewire_hubs(ba1, rsteps=100)
-    mn = mc.construct(ba1, test_net)
-    # cnet = er([[y for y in range(20)] for x in range(3)], p=0.3, edges=None)
-    sir = SISMultiplex(mn, beta=0.3, mu=0.01, inter_beta=1.0, inter_rec=0.01)
-    # sir.run(epochs=500, layers=[0, 1], labels=True)
-    sir.epidemic_data(epochs=100)
-    # sir.run(epochs=50, visualize=True, layers=[0, 1])
 
+    ng = NetworkGenerator(nodes=200)
+    # ba2 = ng.ba_network()
+    # er1 = ng.er_network(p=4.0 / 200.0)
+    # ba3 = ng.ba_network()
+    mc = MultiplexConstructor()
+    # test_net = mc.rewire_hubs(ba1, rsteps=100)
+    # cnet = er([[y for y in range(20)] for x in range(3)], p=0.3, edges=None)
+    from nettools.monoplex import CentralityMeasure
+    from nettools.utils import NX_CENTRALITY
+
+    # Clear method scores
+    method_scores = {}
+    for method in NX_CENTRALITY.keys():
+        method_scores[method] = 0
+
+    for rl_idx in range(20):
+        # Examine centrality
+        result_counter = 0
+        method_list = []
+        results_matrix = np.zeros((9, 50))
+        for idx, method in enumerate(NX_CENTRALITY.keys()):
+            avg_results = np.zeros((50, 50))
+            method_list.append(method)
+            # if method == 'supernode':
+            #     continue
+            for n_time in range(0, 50):
+                ba1 = ng.ba_network(m0=2)
+                # er1 = ng.er_network(p=4.0 / 200.0)
+                mn = mc.construct(ba1)
+                cn = CentralityMeasure(ba1.network)
+                results_cn = cn.network_cn(method)
+                if method == 'hits':
+                    results_cn = results_cn[1]
+                best_nodes = sorted(results_cn.items(), key=lambda x: x[1])[::-1]
+                sir = SIRMultiplex(mn, beta=0.3, mu=0.1, inter_beta=0.0, inter_rec=0.0, seed_nodes=[best_nodes[0][0]])
+                result = sir.run(epochs=50, visualize=False, layers=[0], labels=True, pause=2)
+                avg_results[n_time] = np.array(result)
+            print("Analysed method: {}".format(method))
+            results_matrix[result_counter] = np.mean(avg_results, axis=0)
+            # plt.plot(np.mean(avg_results, axis=0), hold=True, label=method)
+            result_counter += 1
+
+        print("Result functions completed, start voting, Number: {}, Range: {}".format(rl_idx, [30, 40]))
+        # Vote
+        for point in (30, 40):
+            max_args = list(np.argsort(results_matrix[:, point])[::-1])
+            vote = 9
+            for mth_idx in max_args:
+                method_scores[method_list[mth_idx]] += vote
+                vote -= 1
+        print(method_scores)
+    # plt.legend()
+    # plt.show(True)

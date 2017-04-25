@@ -41,7 +41,7 @@ class InterMeasures(object):
 
         # Aggregate network
         self.agg_net = self.aggregate(self.network_graph_np)
-        self.agg_onet = self.aggregate(self.network_weights_np)
+        self.agg_onet = np.sum(self.network_weights_np, axis=1)
 
     @staticmethod
     def one_triad_clustering(network):
@@ -192,7 +192,7 @@ class InterMeasures(object):
         return np.sum(ref_layer * test_layer) / np.sum(ref_layer)
 
     @staticmethod
-    def participation_coeff(network, agg_net):
+    def participation_coeff(network):
         """
         Participation coefficient:
         "Metrics for the analysis of multiplex networks" Battiston et. al.
@@ -204,21 +204,21 @@ class InterMeasures(object):
          the same number of edges on each of the M layers
 
         :param network: Network adjacency matrix,
-        :param agg_net: Aggregated adjacency matrix,
         :return: Participation coefficient value.
         """
         net_size = network.shape
 
-        # Reshape aggregated network
-        agg_rep = np.repeat(np.sum(agg_net, axis=1)[:, np.newaxis], net_size[-1], axis=1)
+        # Reshape overlap network
+        overlap_net = np.sum(network, axis=1)
+        over_rep = np.repeat(np.sum(overlap_net, axis=1)[:, np.newaxis], net_size[-1], axis=1)
 
         # Compute coefficient
-        d_net = (np.sum(network, axis=1) / agg_rep)**2
+        d_net = (np.sum(network, axis=1) / over_rep)**2
         d_net = np.nan_to_num(d_net)
         return (net_size[-1] / (net_size[-1] - 1)) * (1 - np.sum(d_net, axis=1))
 
     @staticmethod
-    def entropy_coeff(network, agg_net):
+    def entropy_coeff(network):
         """
         Participation coefficient:
         "Metrics for the analysis of multiplex networks" Battiston et. al.
@@ -227,16 +227,16 @@ class InterMeasures(object):
         when node degree is equal distributed between layers.
 
         :param network: Network adjacency matrix,
-        :param agg_net: Aggregated adjacency matrix,
         :return: Entropy coefficient value.
         """
         net_size = network.shape
 
-        # Reshape aggregated network
-        agg_rep = np.repeat(np.sum(agg_net, axis=1)[:, np.newaxis], net_size[-1], axis=1)
+        # Reshape overlap network
+        overlap_net = np.sum(network, axis=1)
+        over_rep = np.repeat(np.sum(overlap_net, axis=1)[:, np.newaxis], net_size[-1], axis=1)
 
         # Compute entropy
-        e_net = (np.sum(network, axis=1) / agg_rep) * np.log(np.sum(network, axis=1) / agg_rep)
+        e_net = (np.sum(network, axis=1) / over_rep) * np.log(np.sum(network, axis=1) / over_rep)
         return -np.sum(e_net, axis=1)
 
     @staticmethod
@@ -306,6 +306,19 @@ class InterMeasures(object):
         agg_net[agg_net > 0] = 1
         return agg_net
 
+    @staticmethod
+    def overlap(net):
+        """
+        Method for computing overlap network, method accepts network on input and
+        return overlapped network. Input network should be in image style
+        number of node x number of nodes x layers.
+
+        :param net: Adjacency matrix - numpy array [nodes x nodes x layers]
+        :return: Overlapped network [nodes x nodes]
+        """
+        over_net = np.sum(net, axis=2)
+        return over_net
+
     def get_network_adjacency(self, weighted=False):
         """
         Method return adjacency matrix for analyzed network
@@ -335,16 +348,16 @@ if __name__ == '__main__':
     # im = InterMeasures('london')
     from nettools.monoplex import NetworkGenerator
     from nettools.multiplex import MultiplexConstructor
-    ng = NetworkGenerator(300)
-    network_ba_1 = ng.ba_network(m0=15)
-    network_ba_2 = ng.ba_network(m0=20)
-    network_er_1 = ng.er_network(p=0.1)
-    network_er_2 = ng.er_network(p=0.3)
+    avg_deg = 10.0
+    network_size = 500
+    ng = NetworkGenerator(network_size)
+    network_ba_1 = ng.ba_network(m0=int(avg_deg / 2))
+    network_ba_2 = ng.ba_network(m0=int(avg_deg / 2))
+    network_er_1 = ng.er_network(p=(avg_deg / network_size))
+    network_er_2 = ng.er_network(p=(avg_deg / network_size))
+    network_bb_1 = ng.bb_network(m0=int(avg_deg / 2))
     mc = MultiplexConstructor()
-    multi_er_er = mc.construct(network_er_1, network_er_2)
-    multi_er_ba = mc.construct(network_er_1, network_ba_1)
-    multi_ba_ba_nc = mc.construct(network_ba_2, network_ba_1)
-    im = InterMeasures()
-    im.network_graph_np = multi_er_er.network
-    im.network_weights_np = multi_er_er.network
-    cluster_nodes = im.one_triad_clustering_pool()
+    network_corr_ba_1 = mc.rewire_hubs(network_ba_1, rsteps=5000)
+    multi_ba_ba_corr_1 = mc.construct(network_ba_1, network_corr_ba_1)
+    pc_baba_corr_1 = InterMeasures.participation_coeff(multi_ba_ba_corr_1.network)
+    print()

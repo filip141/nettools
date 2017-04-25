@@ -12,6 +12,7 @@ NX_CENTRALITY = {
     "hits": "hits_numpy",
     "k-shell": "core_number",
     "voterank": True,
+    "supernode": True
 }
 
 DB_LIST = {
