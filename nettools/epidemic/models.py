@@ -596,7 +596,7 @@ class SIRMultiplex(EpidemicModel):
     def get_num(self, state):
         return len(self.get_by_state(state)[0])
 
-    def run(self, epochs=200, visualize=True, layers=None, labels=False, pause=2):
+    def run(self, epochs=200, visualize=False, layers=None, labels=False, pause=2):
         plt.ion()
         infected_list = []
         # Iterate over disease epochs
@@ -763,9 +763,12 @@ if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
     from nettools.multiplex import MultiplexConstructor
     ng = NetworkGenerator(nodes=200)
-    # ba2 = ng.ba_network()
-    # er1 = ng.er_network(p=4.0 / 200.0)
-    # ba3 = ng.ba_network()
+    ba2 = ng.ba_network()
+    er1 = ng.er_network(p=4.0 / 200.0)
+    ba3 = ng.ba_network()
     mc = MultiplexConstructor()
+    mn = mc.construct(er1, ba2, ba3)
+    sir = SIRMultiplex(mn)
+    sir.run(epochs=50, visualize=True, layers=[0, 1, 2])
     # test_net = mc.rewire_hubs(ba1, rsteps=100)
     # cnet = er([[y for y in range(20)] for x in range(3)], p=0.3, edges=None)
