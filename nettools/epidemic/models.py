@@ -1,6 +1,6 @@
 import random
 import numpy as np
-# from pymnet import *
+from pymnet import *
 import networkx as nx
 import matplotlib.pyplot as plt
 from abc import ABCMeta, abstractmethod
