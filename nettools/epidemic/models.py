@@ -551,7 +551,8 @@ class SIRMultiplex(EpidemicModel):
             self.network_state[node] = self.state2id['r']
 
     def infect_node(self, node):
-        self.network_state[node] = self.state2id['i']
+        if self.network_state[node] == self.state2id['s']:
+            self.network_state[node] = self.state2id['i']
 
     def one_epoch(self):
         # Iterate over infected
@@ -563,10 +564,9 @@ class SIRMultiplex(EpidemicModel):
             nb_nodes = np.nonzero(self.network[node[0], :, node[1]])
             for nb_nd in nb_nodes[0]:
                 # Infect new node same layer
-                if self.network_state[nb_nd, node[1]] == self.state2id['s']:
-                    dc_spread = random.uniform(0, 1)
-                    if self.beta > dc_spread:
-                        self.infect_node((nb_nd, node[1]))
+                dc_spread = random.uniform(0, 1)
+                if self.beta > dc_spread:
+                    self.infect_node((nb_nd, node[1]))
             # Infect new node on different layer
             layer_vote = np.random.uniform(0, 1, size=(self.network.shape[2],))
             inter_infect = np.where([layer_vote < self.inter_beta])[1]
@@ -677,7 +677,8 @@ class SISMultiplex(EpidemicModel):
             self.network_state[node] = self.state2id['s']
 
     def infect_node(self, node):
-        self.network_state[node] = self.state2id['i']
+        if self.network_state[node] == self.state2id['s']:
+            self.network_state[node] = self.state2id['i']
 
     def one_epoch(self):
         # Iterate over infected
@@ -689,10 +690,9 @@ class SISMultiplex(EpidemicModel):
             nb_nodes = np.nonzero(self.network[node[0], :, node[1]])
             for nb_nd in nb_nodes[0]:
                 # Infect new node same layer
-                if self.network_state[nb_nd, node[1]] == self.state2id['s']:
-                    dc_spread = random.uniform(0, 1)
-                    if self.beta > dc_spread:
-                        self.infect_node((nb_nd, node[1]))
+                dc_spread = random.uniform(0, 1)
+                if self.beta > dc_spread:
+                    self.infect_node((nb_nd, node[1]))
             # Infect new node on different layer
             layer_vote = np.random.uniform(0, 1, size=(self.network.shape[2],))
             inter_infect = np.where([layer_vote < self.inter_beta])[1]

@@ -345,19 +345,6 @@ class InterMeasures(object):
 
 
 if __name__ == '__main__':
-    # im = InterMeasures('london')
-    from nettools.monoplex import NetworkGenerator
-    from nettools.multiplex import MultiplexConstructor
-    avg_deg = 10.0
-    network_size = 500
-    ng = NetworkGenerator(network_size)
-    network_ba_1 = ng.ba_network(m0=int(avg_deg / 2))
-    network_ba_2 = ng.ba_network(m0=int(avg_deg / 2))
-    network_er_1 = ng.er_network(p=(avg_deg / network_size))
-    network_er_2 = ng.er_network(p=(avg_deg / network_size))
-    network_bb_1 = ng.bb_network(m0=int(avg_deg / 2))
-    mc = MultiplexConstructor()
-    network_corr_ba_1 = mc.rewire_hubs(network_ba_1, rsteps=5000)
-    multi_ba_ba_corr_1 = mc.construct(network_ba_1, network_corr_ba_1)
-    pc_baba_corr_1 = InterMeasures.participation_coeff(multi_ba_ba_corr_1.network)
-    print()
+    im = InterMeasures('fao')
+    value = im.one_triad_clustering_pool()
+    print(value)

@@ -10,7 +10,7 @@ NX_CENTRALITY = {
     "eigenvector": "eigenvector_centrality",
     "pagerank": "pagerank_numpy",
     "hits": "hits_numpy",
-    "k-shell": "core_number",
+    "k-shell": True,
     "voterank": True,
     "supernode": True
 }

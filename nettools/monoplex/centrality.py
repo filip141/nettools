@@ -1,7 +1,11 @@
 import community
 import numpy as np
 import networkx as nx
-from ..utils.netutils import NX_CENTRALITY
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+from nettools.monoplex.syn_net_gen import Network
+from nettools.utils.netutils import NX_CENTRALITY
 
 
 class CentralityMeasure(object):
@@ -9,6 +13,8 @@ class CentralityMeasure(object):
         # Load graph
         if not pymnet:
             self.network_graph = nx.from_numpy_matrix(graph)
+        elif isinstance(graph, Network):
+            self.network_graph = nx.from_numpy_matrix(graph.network)
         else:
             self.network_graph = nx.Graph(graph._net)
         # Number of nodes
@@ -30,8 +36,42 @@ class CentralityMeasure(object):
             return self.voterank()
         elif method == 'supernode':
             return self.supernode_rank()
+        elif method == 'k-shell':
+            return self.kshell()
         else:
             return None
+
+    @staticmethod
+    def score_remove(network, score, sc_buff=None):
+        if sc_buff is None:
+            sc_buff = {}
+        k_net = network.copy()
+        net_deg = np.sum(network, axis=1)
+        zeros_idx = set(np.where(net_deg <= score)[0]) - set(np.where(net_deg == 0)[0])
+        if not zeros_idx:
+            return k_net, sc_buff
+        for node in zeros_idx:
+            k_net[node, :] = 0
+            k_net[:, node] = 0
+            sc_buff[node] = score
+        return CentralityMeasure.score_remove(k_net, score, sc_buff=sc_buff)
+
+    def kshell(self):
+        """
+        K-Shell algorithm is implemented using 
+        http://www.ifr.ac.uk/netsci08/Download/CT26_Toro_network/CT265_Kitsak.pdf
+        as reference.
+
+        :return: K-shell scores (dict)
+        """
+        node_scores = {}
+        k_shell_score = 1
+        net_shell = nx.to_numpy_matrix(self.network_graph)
+        while True:
+            net_shell, node_scores = self.score_remove(net_shell, k_shell_score, sc_buff=node_scores)
+            k_shell_score += 1
+            if np.sum(net_shell) == 0:
+                return node_scores
 
     def voterank(self, k=None, f=None):
         """
@@ -105,10 +145,18 @@ class CentralityMeasure(object):
                 dc = nx.degree_centrality(comm_net)
                 # Iterate over centrality nodes
                 for cent_node in sorted(dc, key=dc.get)[::-1]:
-                    if len(adj_node[cent_node] - set(visited_snd)) == len(adj_node[cent_node]) \
-                            and not cent_node in super_spreaders.keys():
-                        super_spreaders[cent_node] = max_score
-                        max_score -= 1
-                        visited_snd.append(comm)
-                        break
+                    if len(adj_node[cent_node] - set(visited_snd)) == len(adj_node[cent_node]):
+                        if not cent_node in super_spreaders.keys():
+                            super_spreaders[cent_node] = max_score
+                            max_score -= 1
+                            visited_snd.append(comm)
+                            break
         return super_spreaders
+
+
+if __name__ == '__main__':
+    from nettools.monoplex import NetworkGenerator
+    ng = NetworkGenerator(nodes=500)
+    net = ng.er_network(p=10.0 / 500.0)
+    cn = CentralityMeasure(net.network, pymnet=False)
+    cent = cn.network_cn("k-shell")

@@ -1,12 +1,17 @@
 import colorsys
+import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import rankdata
 from nettools.utils import NX_CENTRALITY
 from nettools.epidemic import SIRMultiplex
 from nettools.multiplex import InterMeasures
 from nettools.monoplex import CentralityMeasure
 from nettools.monoplex import NetworkGenerator, Network
 from nettools.multiplex import MultiplexConstructor, MultiplexNetwork
+
+# Change backend
+matplotlib.use('TkAgg')
 
 
 def centrality_method_test(test_properties=None):
@@ -81,7 +86,7 @@ def centrality_method_test(test_properties=None):
                                    inter_beta=test_properties["inter_beta"], inter_rec=test_properties["inter_rec"],
                                    seed_nodes=[best_nodes[0][0]])
                 result = sir.run(epochs=test_properties["epochs"])
-                avg_results[n_time] = np.array(result) / float(test_properties["nodes"])
+                avg_results[n_time] = np.array(result) / (len(network_list) * float(test_properties["nodes"]))
             print("Analysed method: {}".format(method))
             results_matrix[result_counter] = np.mean(avg_results, axis=0)
             result_counter += 1
@@ -167,7 +172,7 @@ def centrality_recovery_rate_test(test_properties=None, visualise=False):
                                    inter_beta=test_properties["inter_beta"], inter_rec=test_properties["inter_rec"],
                                    seed_nodes=[best_nodes[0][0]])
                 result = sir.run(epochs=test_properties["epochs"])
-                avg_results[n_time] = np.array(result) / float(test_properties["nodes"])
+                avg_results[n_time] = np.array(result) / (len(network_list) * float(test_properties["nodes"]))
             print("Analysed method: {}, Network: {}".format(method, net_num))
             results_names.append("network_{}_{}".format(net_num, method))
             results_matrix[result_counter] = np.mean(avg_results, axis=0)
@@ -217,6 +222,7 @@ def spread_eff_centr_test(network, test_properties=None):
         results_names.append(method)
         cn = CentralityMeasure(InterMeasures.aggregate(network.network))
         results_cn = cn.network_cn(method)
+        print("Found centrality scores.")
         if method == 'hits':
             results_cn = results_cn[1]
         best_nodes = sorted(results_cn.items(), key=lambda x: x[1])[::-1]
@@ -226,9 +232,9 @@ def spread_eff_centr_test(network, test_properties=None):
                 sir = SIRMultiplex(network, beta=test_properties["beta"], mu=test_properties["mu"],
                                    inter_beta=test_properties["inter_beta"], inter_rec=test_properties["inter_rec"],
                                    seed_nodes=[cnode])
-                result = sir.run(epochs=test_properties["epochs"], visualize=False)
+                result = sir.run(epochs=test_properties["epochs"])
                 avg_results[n_time] = np.array(result) / float(network.get_nodes_num())
-            spread_val[idx, cnode] = np.sum(np.mean(avg_results, axis=0))
+            spread_val[idx, cnode] = np.sum(np.mean(avg_results, axis=0)) / test_properties["epochs"]
             cent_scores[idx, cnode] = cscore
         print("Analysed method: {}".format(method))
     return spread_val, cent_scores, results_names
@@ -237,20 +243,31 @@ def spread_eff_centr_test(network, test_properties=None):
 if __name__ == '__main__':
     nodes_nm = 200
     ng = NetworkGenerator(nodes=nodes_nm)
-    bb1 = ng.bb_network(m0=2)
-    bb2 = ng.bb_network(m0=2)
-    bb3 = ng.bb_network(m0=2)
+    bb1 = ng.ba_network(m0=2)
+    bb2 = ng.er_network(p=8.0 / 200.0)
+    bb3 = ng.bb_network(m0=10)
     mc = MultiplexConstructor()
-    mnet_bb = mc.construct(bb1)
-    test_props = {'mean_num': 4, "epochs": 10, "inter_beta": 0.7, "inter_rec": 0.6}
+    mnet_bb = mc.construct(bb1, bb2)
+    print("Network generated and constructed!")
+    test_props = {'mean_num': 100, "epochs": 10, "inter_beta": 0.5, "inter_rec": 0.5, "beta": 0.4, "mu": 0.3}
+    print("Start process...")
     spread_val, cent_scores, results_names = spread_eff_centr_test(mnet_bb, test_properties=test_props)
-    method_scores_spread = spread_val[7]
-    method_scores_cent = cent_scores[7]
-    method_scores_cent = 0.43 * (method_scores_cent / np.max(method_scores_cent))
-    for node_id in range(200):
-        color_rgb = colorsys.hsv_to_rgb(0.56 + method_scores_cent[node_id], 0.5, 1.0)
-        plt.scatter(method_scores_cent[node_id], method_scores_spread[node_id],
-                    c=(color_rgb[0], color_rgb[1], color_rgb[2], 1), hold=True)
+    fig = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
+    for method_idx in range(1, spread_val.shape[0]):
+        method_scores_spread = spread_val[method_idx]
+        method_scores_cent = cent_scores[method_idx]
+        method_scores_cent = 0.43 * (method_scores_cent / np.max(method_scores_cent))
+        # Find data ranks
+        temp_sort = np.argsort(method_scores_cent)
+        data_centrality_rank = np.empty(len(method_scores_cent), int)
+        data_centrality_rank[temp_sort] = np.arange(len(method_scores_cent))
+        sp = plt.subplot(240 + method_idx)
+        for node_id in range(nodes_nm):
+            color_rgb = colorsys.hsv_to_rgb(0.56 + method_scores_cent[node_id], 0.5, 1.0)
+            sp.scatter(data_centrality_rank[node_id], method_scores_spread[node_id],
+                       c=(color_rgb[0], color_rgb[1], color_rgb[2], 1))
+        sp.set_title(results_names[method_idx - 1])
+        sp.set_ylim([0, 1.0])
     plt.show(True)
     # test_props = {"networks": [[{"degree": 4.0, "type": "ER"},
     #                            {"degree": 4.0, "type": "ER"},
