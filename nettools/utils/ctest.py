@@ -233,8 +233,8 @@ def spread_eff_centr_test(network, test_properties=None):
                                    inter_beta=test_properties["inter_beta"], inter_rec=test_properties["inter_rec"],
                                    seed_nodes=[cnode])
                 result = sir.run(epochs=test_properties["epochs"])
-                avg_results[n_time] = np.array(result) / float(network.get_nodes_num())
-            spread_val[idx, cnode] = np.sum(np.mean(avg_results, axis=0)) / test_properties["epochs"]
+                avg_results[n_time] = np.array(result) / float(network.get_layers_num() * network.get_nodes_num())
+            spread_val[idx, cnode] = np.sum(np.mean(avg_results, axis=0)) / float(test_properties["epochs"])
             cent_scores[idx, cnode] = cscore
         print("Analysed method: {}".format(method))
     return spread_val, cent_scores, results_names
@@ -245,11 +245,11 @@ if __name__ == '__main__':
     ng = NetworkGenerator(nodes=nodes_nm)
     bb1 = ng.ba_network(m0=2)
     bb2 = ng.er_network(p=8.0 / 200.0)
-    bb3 = ng.bb_network(m0=10)
+    bb3 = ng.bb_network(m0=4)
     mc = MultiplexConstructor()
-    mnet_bb = mc.construct(bb1, bb2)
+    mnet_bb = mc.construct(bb1, bb2, bb3, bb2)
     print("Network generated and constructed!")
-    test_props = {'mean_num': 100, "epochs": 10, "inter_beta": 0.5, "inter_rec": 0.5, "beta": 0.4, "mu": 0.3}
+    test_props = {'mean_num': 10, "epochs": 10, "inter_beta": 0.5, "inter_rec": 0.5, "beta": 0.4, "mu": 0.3}
     print("Start process...")
     spread_val, cent_scores, results_names = spread_eff_centr_test(mnet_bb, test_properties=test_props)
     fig = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
@@ -267,7 +267,7 @@ if __name__ == '__main__':
             sp.scatter(data_centrality_rank[node_id], method_scores_spread[node_id],
                        c=(color_rgb[0], color_rgb[1], color_rgb[2], 1))
         sp.set_title(results_names[method_idx - 1])
-        sp.set_ylim([0, 1.0])
+        sp.set_ylim([np.min(method_scores_spread), np.max(method_scores_spread)])
     plt.show(True)
     # test_props = {"networks": [[{"degree": 4.0, "type": "ER"},
     #                            {"degree": 4.0, "type": "ER"},

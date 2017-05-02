@@ -29,6 +29,9 @@ class MultiplexNetwork(object):
     def get_nodes_num(self):
         return self.network.shape[0]
 
+    def get_layers_num(self):
+        return self.network.shape[2]
+
 
 class MultiplexConstructor(object):
 
