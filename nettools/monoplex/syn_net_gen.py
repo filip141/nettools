@@ -1,8 +1,8 @@
 import random
 import numpy as np
+import nettools.utils
 import networkx as nx
 import matplotlib.pyplot as plt
-from nettools.utils import sample_from_dist
 
 
 class Network(object):
@@ -94,7 +94,7 @@ class NetworkGenerator(object):
 
             not_norm_dist = np.sum(ba_net, axis=1)
             degree_dist = not_norm_dist / np.sum(not_norm_dist)
-            dist_samples = sample_from_dist(degree_dist, n_samples=m0)
+            dist_samples = nettools.utils.sample_from_dist(degree_dist, n_samples=m0)
             for rand_sample in dist_samples:
                 ba_net[nnode, rand_sample] = 1
                 ba_net[rand_sample, nnode] = 1
@@ -133,7 +133,7 @@ class NetworkGenerator(object):
             not_norm_dist = np.sum(bb_net, axis=1)
             degree_dist = (not_norm_dist / np.sum(not_norm_dist)) * fitness
             degree_dist = degree_dist / np.sum(degree_dist)
-            dist_samples = sample_from_dist(degree_dist, n_samples=m0)
+            dist_samples = nettools.utils.sample_from_dist(degree_dist, n_samples=m0)
             for rand_sample in dist_samples:
                 bb_net[nnode, rand_sample] = 1
                 bb_net[rand_sample, nnode] = 1

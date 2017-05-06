@@ -3,12 +3,12 @@ import matplotlib
 import numpy as np
 import multiprocessing.dummy as mp
 import matplotlib.pyplot as plt
-from nettools.utils import NX_CENTRALITY
-from nettools.epidemic import SIRMultiplex
-from nettools.multiplex import InterMeasures
-from nettools.monoplex import CentralityMeasure
-from nettools.monoplex import NetworkGenerator, Network
-from nettools.multiplex import MultiplexConstructor, MultiplexNetwork
+from nettools.utils.netutils import NX_CENTRALITY
+from nettools.epidemic.models import SIRMultiplex
+from nettools.multiplex.interdependence import InterMeasures
+from nettools.monoplex.centrality import CentralityMeasure
+from nettools.monoplex.syn_net_gen import NetworkGenerator, Network
+from nettools.multiplex.syn_mul_gen import MultiplexConstructor, MultiplexNetwork
 
 # Change backend
 matplotlib.use('TkAgg')

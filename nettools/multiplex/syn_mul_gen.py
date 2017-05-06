@@ -1,8 +1,8 @@
 import random
 import numpy as np
 import networkx as nx
-from nettools.utils import sample_from_dist
-from nettools.monoplex import NetworkGenerator, Network
+import nettools.utils
+import nettools.monoplex
 
 
 class MultiplexNetwork(object):
@@ -47,7 +47,7 @@ class MultiplexConstructor(object):
         multiplex_network = np.zeros((n_nodes, n_nodes, n_layers))
         multiplex_network_weight = np.zeros((n_nodes, n_nodes, n_layers))
         for idx, layer in enumerate(args):
-            if not isinstance(layer, Network):
+            if not isinstance(layer, nettools.monoplex.Network):
                 raise AttributeError("Layers should be Network objects.")
             net_types.append(layer.type)
             multiplex_network[:, :, idx] = layer.network
@@ -65,7 +65,7 @@ class MultiplexConstructor(object):
         degree_dist = not_norm_dist / np.sum(not_norm_dist)
         rcounter = 0
         while rcounter < rsteps:
-            dist_smpl = sample_from_dist(degree_dist, n_samples=2)
+            dist_smpl = nettools.utils.sample_from_dist(degree_dist, n_samples=2)
             # Take random connection from first hub
             nz_0 = np.nonzero(network[dist_smpl[0]])
             # noinspection PyUnresolvedReferences
@@ -98,12 +98,12 @@ class MultiplexConstructor(object):
                 network_w[dist_smpl[0], elem_0] = 0
                 network_w[dist_smpl[1], elem_1] = 0
             rcounter += 1
-        return Network(network, weights_layer=network_w,
-                       n_type=network_obj.type, weighted=network_obj.weighted)
+        return nettools.monoplex.Network(network, weights_layer=network_w,
+                                         n_type=network_obj.type, weighted=network_obj.weighted)
 
 
 if __name__ == '__main__':
-    ng = NetworkGenerator(nodes=100)
+    ng = nettools.monoplex.NetworkGenerator(nodes=100)
     ba1 = ng.ba_network()
     ba2 = ng.ba_network()
     ba3 = ng.ba_network()

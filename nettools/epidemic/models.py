@@ -2,9 +2,9 @@ import random
 import numpy as np
 from pymnet import *
 import networkx as nx
+import nettools.multiplex
 import matplotlib.pyplot as plt
 from abc import ABCMeta, abstractmethod
-from nettools.multiplex import MultiplexNetwork
 
 
 def visualize_epidemic(vnetwork, net_attrs):
@@ -319,7 +319,7 @@ class SIRMultilayerPymnet(EpidemicModel):
 
     def get_interconnected(self, node):
         node_cords = self.network_attrs[node][0]
-        if isinstance(self.network, MultiplexNetwork):
+        if isinstance(self.network, nettools.multiplex.MultiplexNetwork):
             return [[(node_cords[0], layer), None] for layer in self.network._nodeToLayers[node_cords[0]]]
         else:
             return [int_nd for int_nd in self.network._net[node_cords].keys() if node_cords[0] != int_nd[0]]
@@ -513,26 +513,41 @@ class SISMultilayerPymnet(EpidemicModel):
 
 
 class SIRMultiplex(EpidemicModel):
-    def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4, inter_beta=0.9, inter_rec=0.3):
+    def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4):
         super(SIRMultiplex, self).__init__()
-        if isinstance(network, MultiplexNetwork):
+        if isinstance(network, nettools.multiplex.MultiplexNetwork):
             network = network.network
         # If seed node is None take random
         if not seed_nodes:
             seed_n = random.randint(0, network.shape[0] - 1)
             seed_l = random.randint(0, network.shape[2] - 1)
             seed_nodes = [(seed_n, seed_l)]
+
         # Process properties
         self.mu = mu
         self.beta = beta
-        self.inter_beta = inter_beta
-        self.inter_rec = inter_rec
         self.states = ('s', 'i', 'r')
 
         # Define class network
         self.attrs = {}
         self.network = network
         self.network_size = network.shape
+
+        # If int set same for all layers
+        if isinstance(beta, float) or isinstance(beta, int):
+            inter_beta_dict = dict([(l_idx, beta) for l_idx in range(self.network_size[2])])
+            self.beta = dict([(l_idx, inter_beta_dict) for l_idx in range(self.network_size[2])])
+        if isinstance(mu, float) or isinstance(mu, int):
+            inter_rec_dict = dict([(l_idx, mu) for l_idx in range(self.network_size[2])])
+            self.mu = dict([(l_idx, inter_rec_dict) for l_idx in range(self.network_size[2])])
+
+        # Check inter dicts
+        chk_inter_rec = [len(kk.keys()) for kk in self.beta.values()]
+        chk_inter_beta = [len(kk.keys()) for kk in self.mu.values()]
+        if len(chk_inter_beta) != self.network_size[2] and set(chk_inter_beta).pop() != self.network_size[2]:
+            raise AttributeError("Interbeta should be integer or dictionary, with values for each layer.")
+        if len(chk_inter_rec) != self.network_size[2] and set(chk_inter_rec).pop() != self.network_size[2]:
+            raise AttributeError("Interbeta should be integer or dictionary, with values for each layer.")
 
         # All nodes are susceptible on beginning
         self.network_state = np.zeros(network.shape[1:])
@@ -565,25 +580,27 @@ class SIRMultiplex(EpidemicModel):
             for nb_nd in nb_nodes[0]:
                 # Infect new node same layer
                 dc_spread = random.uniform(0, 1)
-                if self.beta > dc_spread:
+                if self.beta[node[1]][node[1]] > dc_spread:
                     self.infect_node((nb_nd, node[1]))
             # Infect new node on different layer
             layer_vote = np.random.uniform(0, 1, size=(self.network.shape[2],))
-            inter_infect = np.where([layer_vote < self.inter_beta])[1]
-            inter_infected_number = len(inter_infect)
-            for int_inf in range(inter_infected_number):
+            # noinspection PyTypeChecker
+            layer_betas = [x_it[1] for x_it in sorted(self.beta[node[1]].items(), key=self.beta[node[1]].get)]
+            inter_infect = np.where(layer_vote < np.array(layer_betas))[0]
+            for int_inf in inter_infect:
                 self.infect_node((node[0], int_inf))
 
             # Recovery
             rc_spread = random.uniform(0, 1)
-            if self.mu > rc_spread:
+            if self.mu[node[1]][node[1]] > rc_spread:
                 self.recover_node((node[0], node[1]))
 
             # Recover node on different layer
             layer_rc_vote = np.random.uniform(0, 1, size=(self.network.shape[2],))
-            inter_rec = np.where([layer_rc_vote < self.inter_rec])[1]
-            inter_recovery_number = len(inter_rec)
-            for int_rec in range(inter_recovery_number):
+            # noinspection PyTypeChecker
+            layer_rec = [x_it[1] for x_it in sorted(self.mu[node[1]].items(), key=self.mu[node[1]].get)]
+            inter_rec = np.where(layer_rc_vote < np.array(layer_rec))[0]
+            for int_rec in inter_rec:
                 if node[1] != int_rec:
                     self.recover_node((node[0], int_rec))
 
@@ -767,8 +784,9 @@ if __name__ == '__main__':
     er1 = ng.er_network(p=4.0 / 200.0)
     ba3 = ng.ba_network()
     mc = MultiplexConstructor()
-    mn = mc.construct(er1, ba2, ba3)
-    sir = SIRMultiplex(mn)
-    sir.run(epochs=50, visualize=True, layers=[0, 1, 2])
+    mn = mc.construct(er1, ba2)
+    inter_beta_v2 = {0: {0: 0.1, 1: 0.3}, 1: {0: 0.6, 1: 0.5}}
+    sir = SIRMultiplex(mn, beta=inter_beta_v2)
+    sir.run(epochs=50, visualize=True, layers=[0, 1])
     # test_net = mc.rewire_hubs(ba1, rsteps=100)
     # cnet = er([[y for y in range(20)] for x in range(3)], p=0.3, edges=None)

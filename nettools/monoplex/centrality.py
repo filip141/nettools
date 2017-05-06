@@ -2,18 +2,15 @@ import community
 import numpy as np
 import networkx as nx
 import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-from nettools.monoplex.syn_net_gen import Network
-from nettools.utils.netutils import NX_CENTRALITY
-
+import nettools.utils
+import nettools.monoplex
 
 class CentralityMeasure(object):
     def __init__(self, graph, pymnet=False):
         # Load graph
         if not pymnet:
             self.network_graph = nx.from_numpy_matrix(graph)
-        elif isinstance(graph, Network):
+        elif isinstance(graph, nettools.monoplex.Network):
             self.network_graph = nx.from_numpy_matrix(graph.network)
         else:
             self.network_graph = nx.Graph(graph._net)
@@ -22,7 +19,7 @@ class CentralityMeasure(object):
 
     def network_cn(self, method):
         # Convert to networkx graph
-        nx_mth = NX_CENTRALITY.get(method, None)
+        nx_mth = nettools.utils.NX_CENTRALITY.get(method, None)
 
         # Check implementation
         if nx_mth is None:
@@ -42,19 +39,19 @@ class CentralityMeasure(object):
             return None
 
     @staticmethod
-    def score_remove(network, score, sc_buff=None):
+    def score_remove(k_net, score, sc_buff=None, crust=0):
         if sc_buff is None:
             sc_buff = {}
-        k_net = network.copy()
-        net_deg = np.sum(network, axis=1)
-        zeros_idx = set(np.where(net_deg <= score)[0]) - set(np.where(net_deg == 0)[0])
+        net_deg = np.sum(k_net, axis=1)
+        zeros_idx = set(np.where(net_deg <= int(score))[0]) - set(np.where(net_deg == 0)[0])
         if not zeros_idx:
             return k_net, sc_buff
         for node in zeros_idx:
             k_net[node, :] = 0
             k_net[:, node] = 0
-            sc_buff[node] = score
-        return CentralityMeasure.score_remove(k_net, score, sc_buff=sc_buff)
+            sc_buff[node] = score + crust
+        crust += 1
+        return CentralityMeasure.score_remove(k_net, score, sc_buff=sc_buff, crust=crust)
 
     def kshell(self):
         """
@@ -71,6 +68,9 @@ class CentralityMeasure(object):
             net_shell, node_scores = self.score_remove(net_shell, k_shell_score, sc_buff=node_scores)
             k_shell_score += 1
             if np.sum(net_shell) == 0:
+                # Prevent not connected nodes
+                for z_node in (set(range(net_shell.shape[0])) - set(node_scores.keys())):
+                    node_scores[z_node] = 0
                 return node_scores
 
     def voterank(self, k=None, f=None):

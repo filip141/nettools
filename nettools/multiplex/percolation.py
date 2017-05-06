@@ -1,9 +1,8 @@
 import logging
 import numpy as np
 import networkx as nx
+import nettools.multiplex
 import matplotlib.pyplot as plt
-from nettools.multiplex import MultiplexNetwork
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,14 +18,14 @@ class Percolation(object):
     def __init__(self, network):
         # Convert to multiplex object if adjacency passed
         if isinstance(network, np.ndarray):
-            self.network = MultiplexNetwork(network)
-        elif isinstance(network, MultiplexNetwork):
+            self.network = nettools.multiplex.MultiplexNetwork(network)
+        elif isinstance(network, nettools.multiplex.MultiplexNetwork):
             self.network = network
         else:
             raise ValueError("Network should be MultiplexNetwork object or numpy.ndarray")
 
     def remove_nodes(self, probability):
-        new_net = MultiplexNetwork(self.network.network.copy())
+        new_net = nettools.multiplex.MultiplexNetwork(self.network.network.copy())
         per_prob = np.random.uniform(0, 1, size=(self.network.get_nodes_num(),))
         for rmnode in np.where(per_prob < probability)[0]:
             new_net.remove_node(rmnode)

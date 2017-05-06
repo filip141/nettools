@@ -3,10 +3,10 @@ import pymnet
 import logging
 import copy_reg
 import numpy as np
+import nettools.utils
 import networkx as nx
 import scipy.stats as stats
 import multiprocessing as mp
-from nettools.utils.netutils import load_multinet_by_name
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,16 +26,26 @@ class InterMeasures(object):
     def __init__(self, db_name='london', network_attr=None):
         # Load network
         if network_attr is None:
-            network_prop = load_multinet_by_name(db_name)
-            self.loaded_network = network_prop[0]
-            self.network_graph_np = network_prop[1]
-            self.network_weights_np = network_prop[2]
-            self.id2node, self.node2id = network_prop[3]
-            self.layers_attr = network_prop[4]
+            network_prop = nettools.utils.load_multinet_by_name(db_name)
+            self.network_graph_np = network_prop[0].network
+            self.network_weights_np = network_prop[1].network
+            self.id2node, self.node2id = network_prop[2]
+            self.layers_attr = network_prop[3]
         else:
-            self.loaded_network = network_attr['loaded_network']
-            self.network_graph_np = network_attr['network_graph_np']
-            self.network_weights_np = network_attr['network_weights_np']
+            # Numpy alternative
+            net = network_attr.get('network_weights')
+            net_np = network_attr.get('network_weights_np')
+            weight_net = network_attr.get('network_weights')
+            weight_net_np = network_attr.get('network_weights_np')
+            if net_np is None:
+                self.network_graph_np = net.network
+            else:
+                self.network_graph_np = net_np
+            if weight_net_np is None:
+                self.network_weights_np = weight_net.network
+            else:
+                self.network_weights_np = weight_net_np
+            # Set other attributes
             self.id2node, self.node2id = network_attr['mapping']
             self.layers_attr = network_attr['layers_attr']
 

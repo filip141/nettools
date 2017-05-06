@@ -1,7 +1,7 @@
 import os
-import pymnet
 import random
 import numpy as np
+from nettools.multiplex.syn_mul_gen import MultiplexNetwork
 
 NX_CENTRALITY = {
     "degree": "degree_centrality",
@@ -47,7 +47,6 @@ def load_multinet(path_layers, path_edges, path_nodes, directed=False):
 
     # Define empty graph
     layers_attr = {}
-    loaded_network = pymnet.MultiplexNetwork(couplings='categorical')
     node2id = {}
     id2node = {}
 
@@ -59,8 +58,6 @@ def load_multinet(path_layers, path_edges, path_nodes, directed=False):
             line_split = l_line.split(" ")
             l_nr, l_name = (int(line_split[0]), " ".join(line_split[1:])[:-1])
             layers_attr[l_nr] = l_name
-            # Load layer
-            loaded_network.add_layer(l_nr)
 
     # Load nodes from nodes file
     counter = 0
@@ -86,14 +83,13 @@ def load_multinet(path_layers, path_edges, path_nodes, directed=False):
         for l_line in db_edges.readlines():
             line_split = l_line.split(" ")
             l_nr, ed_o, ed_t, weight = line_split
-            loaded_network.A[int(l_nr)][int(ed_o), int(ed_t)] = 1
             network_graph_np[node2id[ed_o], node2id[ed_t], int(l_nr) - 1] = 1
             network_weights_np[node2id[ed_o], node2id[ed_t], int(l_nr) - 1] = float(weight)
             # Symmetry for undirected networks
             if not directed:
                 network_graph_np[node2id[ed_t], node2id[ed_o], int(l_nr) - 1] = 1
                 network_weights_np[node2id[ed_t], node2id[ed_o], int(l_nr) - 1] = float(weight)
-    return loaded_network, network_graph_np, network_weights_np, mappings, layers_attr
+    return MultiplexNetwork(network_graph_np), MultiplexNetwork(network_weights_np), mappings, layers_attr
 
 
 def sample_from_dist(dist, n_samples=1):
