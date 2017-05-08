@@ -89,7 +89,8 @@ def load_multinet(path_layers, path_edges, path_nodes, directed=False):
             if not directed:
                 network_graph_np[node2id[ed_t], node2id[ed_o], int(l_nr) - 1] = 1
                 network_weights_np[node2id[ed_t], node2id[ed_o], int(l_nr) - 1] = float(weight)
-    return MultiplexNetwork(network_graph_np), MultiplexNetwork(network_weights_np), mappings, layers_attr
+    return MultiplexNetwork(network_graph_np, weights_layer=network_weights_np,
+                            weighted=True, mappings=mappings, layers_attr=layers_attr)
 
 
 def sample_from_dist(dist, n_samples=1):

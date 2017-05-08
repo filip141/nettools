@@ -3,8 +3,9 @@ import pymnet
 import logging
 import copy_reg
 import numpy as np
-import nettools.utils
 import networkx as nx
+import nettools.utils
+import nettools.multiplex
 import scipy.stats as stats
 import multiprocessing as mp
 
@@ -23,20 +24,25 @@ copy_reg.pickle(types.MethodType, _pickle_method)
 
 class InterMeasures(object):
 
-    def __init__(self, db_name='london', network_attr=None):
+    def __init__(self, db_name='london', network=None):
         # Load network
-        if network_attr is None:
+        if network is None:
             network_prop = nettools.utils.load_multinet_by_name(db_name)
             self.network_graph_np = network_prop[0].network
             self.network_weights_np = network_prop[1].network
             self.id2node, self.node2id = network_prop[2]
             self.layers_attr = network_prop[3]
-        else:
+        elif isinstance(network, nettools.multiplex.MultiplexNetwork):
+            self.network_graph_np = network.network
+            self.network_weights_np = network.network_weighted
+            self.id2node, self.node2id = network.mappings
+            self.layers_attr = network.layers_attr
+        elif isinstance(network, dict):
             # Numpy alternative
-            net = network_attr.get('network_weights')
-            net_np = network_attr.get('network_weights_np')
-            weight_net = network_attr.get('network_weights')
-            weight_net_np = network_attr.get('network_weights_np')
+            net = network.get('network_weights')
+            net_np = network.get('network_weights_np')
+            weight_net = network.get('network_weights')
+            weight_net_np = network.get('network_weights_np')
             if net_np is None:
                 self.network_graph_np = net.network
             else:
@@ -46,8 +52,8 @@ class InterMeasures(object):
             else:
                 self.network_weights_np = weight_net_np
             # Set other attributes
-            self.id2node, self.node2id = network_attr['mapping']
-            self.layers_attr = network_attr['layers_attr']
+            self.id2node, self.node2id = network['mapping']
+            self.layers_attr = network['layers_attr']
 
         # Aggregate network
         self.agg_net = self.aggregate(self.network_graph_np)
@@ -340,12 +346,6 @@ class InterMeasures(object):
             return self.network_weights_np
         else:
             return self.network_graph_np
-
-    def get_network_pymnet(self):
-        """
-        Method return pymnet network
-        """
-        return self.loaded_network
 
     def get_network_info(self):
         """

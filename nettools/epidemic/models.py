@@ -1,10 +1,14 @@
 import random
 import numpy as np
-from pymnet import *
+# from pymnet import *
 import networkx as nx
-import nettools.multiplex
+
+import matplotlib
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
+
 from abc import ABCMeta, abstractmethod
+import nettools.multiplex
 
 
 def visualize_epidemic(vnetwork, net_attrs):
@@ -776,17 +780,170 @@ class SISMultiplex(EpidemicModel):
             return s, i
 
 
+class SIRMultiplexNumpy(EpidemicModel):
+    def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4):
+        super(SIRMultiplexNumpy, self).__init__()
+        if isinstance(network, nettools.multiplex.MultiplexNetwork):
+            network = network.network
+        # If seed node is None take random
+        if not seed_nodes:
+            seed_n = random.randint(0, network.shape[0] - 1)
+            seed_l = random.randint(0, network.shape[2] - 1)
+            seed_nodes = [(seed_n, seed_l)]
+
+        # Process properties
+        self.mu = mu
+        self.beta = beta
+
+        # Define class network
+        self.attrs = {}
+        self.network = network
+        self.states = ('s', 'i', 'r')
+        self.network_size = network.shape
+
+        # If int set same for all layers
+        if isinstance(beta, float) or isinstance(beta, int):
+            inter_beta_dict = dict([(l_idx, beta) for l_idx in range(self.network_size[2])])
+            self.beta = dict([(l_idx, inter_beta_dict) for l_idx in range(self.network_size[2])])
+        if isinstance(mu, float) or isinstance(mu, int):
+            inter_rec_dict = dict([(l_idx, mu) for l_idx in range(self.network_size[2])])
+            self.mu = dict([(l_idx, inter_rec_dict) for l_idx in range(self.network_size[2])])
+
+        # Check inter dicts
+        chk_inter_rec = [len(kk.keys()) for kk in self.beta.values()]
+        chk_inter_beta = [len(kk.keys()) for kk in self.mu.values()]
+        if len(chk_inter_beta) != self.network_size[2] and set(chk_inter_beta).pop() != self.network_size[2]:
+            raise AttributeError("Interbeta should be integer or dictionary, with values for each layer.")
+        if len(chk_inter_rec) != self.network_size[2] and set(chk_inter_rec).pop() != self.network_size[2]:
+            raise AttributeError("Interbeta should be integer or dictionary, with values for each layer.")
+
+        # All nodes are susceptible on beginning
+        self.infected_state = np.zeros((network.shape[2], network.shape[0]))
+        self.recovery_state = np.zeros((network.shape[2], network.shape[0]))
+
+        # Infect seed nodes
+        for seed in seed_nodes:
+            if isinstance(seed, int):
+                for layer_idx in range(self.network_size[2]):
+                    self.infect_node((seed, layer_idx))
+            else:
+                self.infect_node(seed)
+
+    def recover_node(self, node):
+        if self.network_state[node] == self.state2id['i']:
+            self.network_state[node] = self.state2id['r']
+
+    def infect_node(self, node):
+        self.infected_state[node[1], node[0]] = 1
+
+    def one_epoch(self):
+        # Phase 1, Infection
+        infected_idx = np.where((self.infected_state * (1 - self.recovery_state)) > 0)
+        phase_mat = np.zeros(self.network.shape)
+        phase_mat[infected_idx[1], :, infected_idx[0]] = self.network[infected_idx[1], :, infected_idx[0]]
+        inf_mat_rnd = np.random.random(self.network.shape)
+
+        # Beta scores
+        beta_sc = np.array([[bb for bk, bb in x_b.items() if x_k == bk][0] for x_k, x_b in self.beta.items()])
+        res_f_phase = (phase_mat * inf_mat_rnd)
+        nz_val = np.where(res_f_phase != 0)
+        beta_rep = np.repeat(
+            np.repeat(beta_sc[np.newaxis, np.newaxis, :], self.network.shape[0], axis=0), self.network.shape[1], axis=1
+        )
+        res_f_phase[nz_val] = res_f_phase[nz_val] < beta_rep[nz_val]
+        infected_n = np.transpose(np.sum(res_f_phase, axis=0), [1, 0]) + self.infected_state
+
+        # Sinking
+        beta_mat = np.array([[yf if yk != xk else 1 for yk, yf in sorted(xf.items())] for
+                             xk, xf in sorted(self.beta.items())])
+        beta_mat = np.repeat(beta_mat[:, :, np.newaxis], self.network.shape[0], axis=2)
+        inf_sink = np.repeat(infected_n[:, np.newaxis, :], self.network.shape[2], axis=1)
+        random_sink = np.random.random(inf_sink.shape)
+        inf_rnd = inf_sink * random_sink
+        nz_sink = np.where(inf_rnd != 0)
+        inf_rnd[nz_sink] = inf_rnd[nz_sink] < beta_mat[nz_sink]
+
+        after_sink = np.sum(inf_rnd, axis=0)
+        rec_sink = np.repeat(after_sink[:, np.newaxis, :], self.network.shape[2], axis=1)
+        rec_mu_mat = np.array([[yf for yk, yf in sorted(xf.items())] for xk, xf in sorted(self.mu.items())])
+        rec_mu_mat = np.repeat(rec_mu_mat[:, :, np.newaxis], self.network.shape[0], axis=2)
+        rec_st_rnd = np.random.random(rec_sink.shape)
+        rec_sink_rnd = rec_sink * rec_st_rnd
+        nz_rec_sink = np.where(rec_sink_rnd != 0)
+        rec_sink_rnd[nz_rec_sink] = rec_sink_rnd[nz_rec_sink] < rec_mu_mat[nz_rec_sink]
+        self.infected_state = after_sink.clip(0, 1)
+        self.recovery_state = self.recovery_state + np.sum(rec_sink_rnd, axis=0)
+
+    def get_by_state(self, state):
+        # Check state
+        if state not in self.states:
+            raise ValueError("Wrong state for SIR model")
+        elif state == "i":
+            return np.where((self.infected_state * (1 - self.recovery_state)) > 0)
+        elif state == "r":
+            return np.where(self.recovery_state > 0)
+        else:
+            return np.where((self.recovery_state + self.infected_state) == 0)
+
+    def get_num(self, state):
+        return len(self.get_by_state(state)[0])
+
+    def run(self, epochs=200, visualize=False, layers=None, labels=False, pause=2):
+        plt.ion()
+        infected_list = []
+        # Iterate over disease epochs
+        for dt in range(0, epochs):
+            self.one_epoch()
+            if visualize:
+                network_state = np.transpose(self.infected_state, [1, 0]) + np.transpose(self.recovery_state, [1, 0])
+                visualize_epidemic_image_style(self.network, network_state, layers=layers,
+                                               labels=labels, pause=pause)
+            infected_list.append(self.get_num('i') + self.get_num('r'))
+        return infected_list
+
+    # noinspection PyAugmentAssignment
+    def epidemic_data(self, epochs=50, show=True):
+        s, i, r = [], [], []
+        # Iterate over disease epochs
+        for dt in range(0, epochs):
+            s.append(self.get_num(state='s'))
+            i.append(self.get_num(state='i'))
+            r.append(self.get_num(state='r'))
+            self.one_epoch()
+        if show:
+            # Conversion
+            s = np.array(s)
+            nodes_layers = self.network_size[0] * self.network_size[2]
+            s = s / float(nodes_layers)
+            r = np.array(r)
+            r = r / float(nodes_layers)
+            i = np.array(i)
+            i = i / float(nodes_layers)
+            # Show
+            plt.figure()
+            plt.hold(True)
+            plt.plot(s, color='g')
+            plt.plot(i, color='r')
+            plt.plot(r, color='b')
+            plt.show(True)
+        else:
+            return s, i, r
+
 if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
     from nettools.multiplex import MultiplexConstructor
-    ng = NetworkGenerator(nodes=200)
+    ng = NetworkGenerator(nodes=20)
     ba2 = ng.ba_network()
-    er1 = ng.er_network(p=4.0 / 200.0)
+    er1 = ng.er_network(p=4.0 / 20.0)
     ba3 = ng.ba_network()
     mc = MultiplexConstructor()
-    mn = mc.construct(er1, ba2)
-    inter_beta_v2 = {0: {0: 0.1, 1: 0.3}, 1: {0: 0.6, 1: 0.5}}
-    sir = SIRMultiplex(mn, beta=inter_beta_v2)
-    sir.run(epochs=50, visualize=True, layers=[0, 1])
+    mn = mc.construct(ba2)
+    inter_beta_v2 = {0: {0: 0.5}}
+    sir = SIRMultiplexNumpy(mn, beta=inter_beta_v2, mu=1.0)
+    sir.run(visualize=True, layers=[0], labels=True, pause=5)
+    # sir2 = SIRMultiplex(mn, beta=inter_beta_v2, mu=0.1)
+    # sir2.epidemic_data(epochs=200)
+    # plt.show()
+    # sir.run(visualize=True, labels=True, layers=[0, 1])
     # test_net = mc.rewire_hubs(ba1, rsteps=100)
     # cnet = er([[y for y in range(20)] for x in range(3)], p=0.3, edges=None)

@@ -1,3 +1,4 @@
 from interdependence import InterMeasures
 from syn_mul_gen import MultiplexNetwork, MultiplexConstructor
 from percolation import Percolation
+from centrality import CentralityMultiplex

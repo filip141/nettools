@@ -16,7 +16,7 @@ class CentralityMultiplex(object):
         self.nodes_num = network.get_nodes_num()
         self.layers_num = network.get_layers_num()
 
-    def ks_index(self, method="k-shell"):
+    def ks_index(self, method="voterank"):
         # Iterate over layers
         inter_mat = np.zeros((self.layers_num, self.nodes_num))
         ks_mat = np.zeros((self.layers_num, self.nodes_num))
@@ -24,7 +24,11 @@ class CentralityMultiplex(object):
         for l_idx in range(self.layers_num):
             cn = nettools.monoplex.CentralityMeasure(self.network_numpy[:, :, l_idx])
             cnt_scores = cn.network_cn(method)
-            cnt_arr = np.array([x_it[1] for x_it in sorted(cnt_scores.items(), key=cnt_scores.get)])
+            if method == 'hits':
+                cnt_scores = cnt_scores[1]
+            cnt_arr_tmp = np.array([x_it[1] for x_it in sorted(cnt_scores.items(), key=cnt_scores.get)])
+            cnt_arr = np.zeros((self.nodes_num,))
+            cnt_arr[:cnt_arr_tmp.shape[0]] = cnt_arr_tmp
             ks_mat[l_idx] = cnt_arr
             # Get intralayer neighbors
             intra_layer = (self.beta[l_idx][l_idx] / self.mu[l_idx][l_idx]) * cnt_arr.astype(np.float64)

@@ -7,12 +7,15 @@ import nettools.monoplex
 
 class MultiplexNetwork(object):
 
-    def __init__(self, network, weights_layer=None, n_types=None, weighted=False):
+    def __init__(self, network, weights_layer=None, n_types=None, weighted=False,
+                 layers_attr=None, mappings=None):
         if n_types is None:
             self.type = []
         self.network = network
         self.network_weighted = weights_layer
         self.weighted = weighted
+        self.mappings = mappings
+        self.layers_attr = layers_attr
 
     def giant_connected_component(self):
         agg_net = np.sum(self.network, axis=2)
