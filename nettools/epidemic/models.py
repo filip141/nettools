@@ -440,7 +440,7 @@ class SISMultilayerPymnet(EpidemicModel):
 
     def get_interconnected(self, node):
         node_cords = self.network_attrs[node][0]
-        if isinstance(self.network, MultiplexNetwork):
+        if isinstance(self.network, nettools.multiplex.MultiplexNetwork):
             return [[(node_cords[0], layer), None] for layer in self.network._nodeToLayers[node_cords[0]]]
         else:
             return [int_nd for int_nd in self.network._net[node_cords].keys() if node_cords[0] != int_nd[0]]
@@ -661,7 +661,7 @@ class SIRMultiplex(EpidemicModel):
 class SISMultiplex(EpidemicModel):
     def __init__(self, network, seed_nodes=None, mu=0.01, beta=0.4, inter_beta=0.9, inter_rec=0.3):
         super(SISMultiplex, self).__init__()
-        if isinstance(network, MultiplexNetwork):
+        if isinstance(network, nettools.multiplex.MultiplexNetwork):
             network = network.network
         # If seed node is None take random
         if not seed_nodes:
@@ -852,6 +852,7 @@ class SIRMultiplexNumpy(EpidemicModel):
         )
         res_f_phase[nz_val] = res_f_phase[nz_val] < beta_rep[nz_val]
         infected_n = np.transpose(np.sum(res_f_phase, axis=0), [1, 0]) + self.infected_state
+        infected_n = infected_n.clip(0, 1)
 
         # Sinking
         beta_mat = np.array([[yf if yk != xk else 1 for yk, yf in sorted(xf.items())] for
@@ -864,7 +865,7 @@ class SIRMultiplexNumpy(EpidemicModel):
         inf_rnd[nz_sink] = inf_rnd[nz_sink] < beta_mat[nz_sink]
 
         after_sink = np.sum(inf_rnd, axis=0)
-        rec_sink = np.repeat(after_sink[:, np.newaxis, :], self.network.shape[2], axis=1)
+        rec_sink = np.repeat(self.infected_state[:, np.newaxis, :], self.network.shape[2], axis=1)
         rec_mu_mat = np.array([[yf for yk, yf in sorted(xf.items())] for xk, xf in sorted(self.mu.items())])
         rec_mu_mat = np.repeat(rec_mu_mat[:, :, np.newaxis], self.network.shape[0], axis=2)
         rec_st_rnd = np.random.random(rec_sink.shape)
@@ -873,6 +874,7 @@ class SIRMultiplexNumpy(EpidemicModel):
         rec_sink_rnd[nz_rec_sink] = rec_sink_rnd[nz_rec_sink] < rec_mu_mat[nz_rec_sink]
         self.infected_state = after_sink.clip(0, 1)
         self.recovery_state = self.recovery_state + np.sum(rec_sink_rnd, axis=0)
+        self.recovery_state = self.recovery_state.clip(0, 1)
 
     def get_by_state(self, state):
         # Check state
@@ -932,17 +934,22 @@ class SIRMultiplexNumpy(EpidemicModel):
 if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
     from nettools.multiplex import MultiplexConstructor
-    ng = NetworkGenerator(nodes=20)
+    ng = NetworkGenerator(nodes=200)
     ba2 = ng.ba_network()
     er1 = ng.er_network(p=4.0 / 20.0)
     ba3 = ng.ba_network()
     mc = MultiplexConstructor()
-    mn = mc.construct(ba2)
-    inter_beta_v2 = {0: {0: 0.5}}
-    sir = SIRMultiplexNumpy(mn, beta=inter_beta_v2, mu=1.0)
-    sir.run(visualize=True, layers=[0], labels=True, pause=5)
-    # sir2 = SIRMultiplex(mn, beta=inter_beta_v2, mu=0.1)
-    # sir2.epidemic_data(epochs=200)
+    mn = mc.construct(ba2, ba3)
+    mn2 = mc.construct(ba2, ba3)
+    inter_beta_v2 = {0: {0: 0.6, 1: 0.3}, 1: {0: 0.6, 1: 0.1}}
+    sir = SIRMultiplexNumpy(mn, beta=inter_beta_v2, mu=0.5)
+    from timeit import Timer
+    t = Timer(lambda: sir.epidemic_data(epochs=2000, show=False))
+    print t.timeit(number=1)
+    # sir.run(visualize=True, layers=[0, 1], labels=True, pause=5)
+    sir2 = SIRMultiplex(mn2, beta=inter_beta_v2, mu=0.5)
+    t = Timer(lambda: sir2.epidemic_data(epochs=2000, show=False))
+    print t.timeit(number=1)
     # plt.show()
     # sir.run(visualize=True, labels=True, layers=[0, 1])
     # test_net = mc.rewire_hubs(ba1, rsteps=100)
