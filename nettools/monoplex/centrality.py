@@ -9,9 +9,9 @@ class CentralityMeasure(object):
     def __init__(self, graph, pymnet=False):
         # Load graph
         if not pymnet:
-            self.network_graph = nx.from_numpy_matrix(graph)
+            self.network_graph = nx.from_numpy_matrix(graph, create_using=nx.MultiDiGraph())
         elif isinstance(graph, nettools.monoplex.Network):
-            self.network_graph = nx.from_numpy_matrix(graph.network)
+            self.network_graph = nx.from_numpy_matrix(graph.network, create_using=nx.MultiDiGraph())
         else:
             self.network_graph = nx.Graph(graph._net)
         # Number of nodes
@@ -159,4 +159,4 @@ if __name__ == '__main__':
     ng = NetworkGenerator(nodes=500)
     net = ng.er_network(p=10.0 / 500.0)
     cn = CentralityMeasure(net.network, pymnet=False)
-    cent = cn.network_cn("k-shell")
+    cent = cn.network_cn("degree")

@@ -6,6 +6,7 @@ import nettools.epidemic
 import nettools.monoplex
 import nettools.multiplex
 import matplotlib.pyplot as plt
+from tqdm import tqdm_notebook as tqdm
 
 # Change backend
 matplotlib.use('TkAgg')
@@ -179,6 +180,7 @@ def centrality_recovery_rate_test(test_properties=None, visualise=False):
 
 
 def spread_eff_centr_test(network, test_properties=None):
+    nmethods = 9
     # Define test properties
     if test_properties is None:
         test_properties = {}
@@ -195,6 +197,9 @@ def spread_eff_centr_test(network, test_properties=None):
         test_properties["mean_num"] = 50
     if test_properties.get("epochs") is None:
         test_properties["epochs"] = 50
+    centrality_result = test_properties.get("centrality")
+    if centrality_result is not None:
+        nmethods = len(centrality_result.keys())
 
     plt.ion()
     # Check network
@@ -204,23 +209,31 @@ def spread_eff_centr_test(network, test_properties=None):
         raise AttributeError("Network should be Network object or numpy ndarray.")
 
     # Create networks
-    nmethods = 9
     print("Analysing recovery rate for Network")
     # Examine centrality
     results_names = []
     cent_scores = np.zeros((nmethods, network.get_nodes_num()))
     spread_val = np.zeros((nmethods, network.get_nodes_num()))
-    for idx, method in enumerate(nettools.utils.NX_CENTRALITY.keys()):
+
+    # If centrality present add
+    if centrality_result is not None:
+        cnt_methods = centrality_result.keys()
+    else:
+        cnt_methods = nettools.utils.NX_CENTRALITY.keys()
+    for idx, method in tqdm(enumerate(cnt_methods)):
         if method == 'supernode':
             continue
         results_names.append(method)
-        cn = nettools.monoplex.CentralityMeasure(nettools.multiplex.InterMeasures.aggregate(network.network))
-        results_cn = cn.network_cn(method)
+        if centrality_result is None:
+            cn = nettools.monoplex.CentralityMeasure(nettools.multiplex.InterMeasures.aggregate(network.network))
+            results_cn = cn.network_cn(method)
+        else:
+            results_cn = centrality_result[method]
         print("Found centrality scores.")
         if method == 'hits':
             results_cn = results_cn[1]
         best_nodes = sorted(results_cn.items(), key=lambda x: x[1])[::-1]
-        for cnode, cscore in best_nodes:
+        for cnode, cscore in tqdm(best_nodes):
             avg_results = np.zeros((test_properties["mean_num"], test_properties["epochs"]))
             for n_time in range(0, test_properties["mean_num"]):
                 sir = nettools.epidemic.SIRMultiplex(network, beta=test_properties["beta"], mu=test_properties["mu"],
@@ -234,18 +247,21 @@ def spread_eff_centr_test(network, test_properties=None):
 
 
 if __name__ == '__main__':
-    nodes_nm = 300
-    # ng = NetworkGenerator(nodes=nodes_nm)
-    # bb1 = ng.bb_network(m0=3)
-    # bb2 = ng.bb_network(m0=3)
-    # mc = MultiplexConstructor()
-    # mnet_bb = mc.construct(bb1)
-    # print("Network generated and constructed!")
+    nodes_nm = 40
+    from nettools.monoplex import NetworkGenerator
+    from nettools.multiplex import MultiplexConstructor
+    ng = NetworkGenerator(nodes=nodes_nm)
+    bb1 = ng.ba_network(m0=3)
+    # bb2 = ng.ba_network(m0=3)
+    mc = MultiplexConstructor()
+    mnet_bb = mc.construct(bb1)
+    print("Network generated and constructed!")
     # # beta_param = {0: {0: 0.1, 1: 0.1}, 1: {1: 0.3, 0: 0.3}}
     # # rec_param = {0: {0: 1.0, 1: 1.0}, 1: {1: 1.0, 0: 1.0}}
     # beta_param = {0: {0: 0.2}}
     # rec_param = {0: {0: 1.0}}
-    # test_props = {'mean_num': 300, "epochs": 10, "beta": beta_param, "mu": rec_param}
+    # test_props = {'mean_num': 300, "epochs": 10, "beta": beta_param, "mu": rec_param,
+    #               "centrality": {"metoda": {0: 12, 1: 32, 2: 65, 3: 1}}}
     # print("Start process...")
     # spread_val, cent_scores, results_names = spread_eff_centr_test(mnet_bb, test_properties=test_props)
     # fig = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
@@ -267,12 +283,12 @@ if __name__ == '__main__':
     #     sp.set_ylim([np.min(method_scores_spread), np.max(method_scores_spread)])
     # plt.show(True)
 
-    beta_param = {0: {0: 0.3}}
-    rec_param = {0: {0: 1.0}}
-    test_props = {"networks": [[{"degree": 6.0, "type": "BA"}]],
-                  "points": "all",
-                  "ntimes": 150,
-                  "beta": beta_param,
-                  "mu": rec_param
-                  }
-    centrality_method_test(test_props)
+    # beta_param = {0: {0: 0.3}}
+    # rec_param = {0: {0: 1.0}}
+    # test_props = {"networks": [[{"degree": 6.0, "type": "BA"}]],
+    #               "points": "all",
+    #               "ntimes": 150,
+    #               "beta": beta_param,
+    #               "mu": rec_param
+    #               }
+    # centrality_method_test(test_props)

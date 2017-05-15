@@ -30,7 +30,6 @@ def compute_spreading_for_method(param):
         avg_results = np.zeros((test_properties["mean_num"], test_properties["epochs"]))
         for n_time in range(0, test_properties["mean_num"]):
             sir = SIRMultiplex(network, beta=test_properties["beta"], mu=test_properties["mu"],
-                               inter_beta=test_properties["inter_beta"], inter_rec=test_properties["inter_rec"],
                                seed_nodes=[cnode])
             result = sir.run(epochs=test_properties["epochs"])
             avg_results[n_time] = np.array(result) / float(network.get_nodes_num())
@@ -90,7 +89,7 @@ def spread_eff_centr_test(network, test_properties=None, exclude=["supernode", "
 
 
 if __name__ == '__main__':
-    nodes_nm = 200
+    nodes_nm = 300
     ng = NetworkGenerator(nodes=nodes_nm)
     bb1 = ng.ba_network(m0=15)
     bb2 = ng.er_network(p=8.0 / 20.0)
@@ -98,7 +97,7 @@ if __name__ == '__main__':
     mc = MultiplexConstructor()
     mnet_bb = mc.construct(bb1)
     print("Network generated and constructed!")
-    test_props = {'mean_num': 10, "epochs": 50, "inter_beta": 0.5, "inter_rec": 0.5, "beta": 0.1, "mu": 0.2}
+    test_props = {'mean_num': 1500, "epochs": 35, "inter_beta": 0.5, "inter_rec": 0.5, "beta": 0.1, "mu": 0.2}
     print("Start process...")
     spread_val, cent_scores, results_names = spread_eff_centr_test(mnet_bb, test_properties=test_props)
     method_scores_spread = spread_val[4]

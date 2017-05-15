@@ -35,6 +35,10 @@ class MultiplexNetwork(object):
     def get_layers_num(self):
         return self.network.shape[2]
 
+    def draw(self, layer=0):
+        nx_graph = nx.from_numpy_matrix(self.network[:, :, layer])
+        nx.draw_networkx(nx_graph, pos=nx.spring_layout(nx_graph), node_size=20)
+
 
 class MultiplexConstructor(object):
 

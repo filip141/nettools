@@ -48,18 +48,55 @@ class CentralityMultiplex(object):
         ks_scores = dict(enumerate(ks_scores))
         return ks_scores
 
+    def multi_pagerank(self, eps=1e-11, alpha=None, beta=1, gamma=1):
+        n_nodes = self.network_numpy.shape[0]
+        if alpha is None:
+            alpha = [0.85 for _ in range(self.network_numpy.shape[-1])]
+        if len(alpha) != self.network_numpy.shape[-1]:
+            raise ValueError("Alpha should be defined for each layer.")
+        # First pagerank iteration
+        el_diff = 1.0
+        out_degree = np.sum(self.network_numpy[:, :, 0], axis=1)
+        max_out = np.maximum(1, out_degree)
+        old_vec = np.array([1 / float(n_nodes) for xr in range(n_nodes)])
+        while el_diff > eps:
+            x = old_vec / max_out
+            x = alpha[0] * np.dot(self.network_numpy[:, :, 0], x) + \
+                (1 - alpha[0]) * (1 / float(n_nodes)) * np.ones((n_nodes,))
+            el_diff = np.sum(np.abs(x - old_vec))
+            old_vec = x
+
+        # For multiplexes
+        x_mat = [x]
+        # Loop acros layers
+        for l_idx in range(1, self.network_numpy.shape[-1]):
+            el_diff = 1.0
+            old_vec = np.array([1 / float(n_nodes) for xr in range(n_nodes)])
+            g_val = np.dot(self.network_numpy[:, :, l_idx], x_mat[-1]**beta)
+            g_val[g_val == 0] = 1.0
+            while el_diff > eps:
+                x_tmp = old_vec / g_val
+                x_tmp_vec = alpha[l_idx] * np.dot(self.network_numpy[:, :, l_idx], x_tmp) * x_mat[-1]**beta
+                x_fin = x_tmp_vec + (1 - alpha[l_idx]) * ((x_mat[-1]**gamma) / (n_nodes * np.mean(x_mat[-1]**gamma)))
+                el_diff = np.sum(np.abs(x_fin - old_vec))
+                old_vec = x_fin
+            x_mat.append(x_fin)
+        final_scores = x_mat[-1] / np.max(x_mat[-1])
+        final_res = dict(enumerate(final_scores))
+        return final_res
+
 
 if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
     from nettools.multiplex import MultiplexConstructor, MultiplexNetwork
-    nodes_nm = 1500
+    nodes_nm = 20
     beta_param = {0: {0: 0.2, 1: 0.3}, 1: {0: 0.1, 1: 0.5}}
     rec_param = {0: {0: 1.0, 1: 1.0}, 1: {0: 1.0, 1: 1.0}}
     ng = NetworkGenerator(nodes=nodes_nm)
     bb1 = ng.ba_network(m0=3)
     bb2 = ng.ba_network(m0=3)
     mc = MultiplexConstructor()
-    mnet_bb = mc.construct(bb1, bb2)
+    mnet_bb = mc.construct(bb1, bb2, bb1)
     cm = CentralityMultiplex(mnet_bb, beta_param, rec_param)
-    cm.ks_index()
+    print(cm.multi_pagerank())
 

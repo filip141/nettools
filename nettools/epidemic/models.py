@@ -741,7 +741,7 @@ class SISMultiplex(EpidemicModel):
         return np.where(self.network_state == self.state2id[state])
 
     def get_num(self, state):
-        return len(self.get_by_state(state)[0])
+        return len(self.network_state[self.network_state == self.state2id[state]])
 
     def run(self, epochs=200, visualize=False, layers=None, labels=False, pause=2):
         plt.ion()
@@ -841,16 +841,15 @@ class SIRMultiplexNumpy(EpidemicModel):
         infected_idx = np.where((self.infected_state * (1 - self.recovery_state)) > 0)
         phase_mat = np.zeros(self.network.shape)
         phase_mat[infected_idx[1], :, infected_idx[0]] = self.network[infected_idx[1], :, infected_idx[0]]
-        inf_mat_rnd = np.random.random(self.network.shape)
+        inf_mat_rnd = np.random.randint(0, 1000, self.network.shape) * 0.001
 
         # Beta scores
         beta_sc = np.array([[bb for bk, bb in x_b.items() if x_k == bk][0] for x_k, x_b in self.beta.items()])
         res_f_phase = (phase_mat * inf_mat_rnd)
-        nz_val = np.where(res_f_phase != 0)
         beta_rep = np.repeat(
             np.repeat(beta_sc[np.newaxis, np.newaxis, :], self.network.shape[0], axis=0), self.network.shape[1], axis=1
         )
-        res_f_phase[nz_val] = res_f_phase[nz_val] < beta_rep[nz_val]
+        res_f_phase[res_f_phase != 0] = res_f_phase[res_f_phase != 0] < beta_rep[res_f_phase != 0]
         infected_n = np.transpose(np.sum(res_f_phase, axis=0), [1, 0]) + self.infected_state
         infected_n = infected_n.clip(0, 1)
 
@@ -859,19 +858,17 @@ class SIRMultiplexNumpy(EpidemicModel):
                              xk, xf in sorted(self.beta.items())])
         beta_mat = np.repeat(beta_mat[:, :, np.newaxis], self.network.shape[0], axis=2)
         inf_sink = np.repeat(infected_n[:, np.newaxis, :], self.network.shape[2], axis=1)
-        random_sink = np.random.random(inf_sink.shape)
+        random_sink = np.random.randint(0, 1000, inf_sink.shape) * 0.001
         inf_rnd = inf_sink * random_sink
-        nz_sink = np.where(inf_rnd != 0)
-        inf_rnd[nz_sink] = inf_rnd[nz_sink] < beta_mat[nz_sink]
+        inf_rnd[inf_rnd != 0] = inf_rnd[inf_rnd != 0] < beta_mat[inf_rnd != 0]
 
         after_sink = np.sum(inf_rnd, axis=0)
         rec_sink = np.repeat(self.infected_state[:, np.newaxis, :], self.network.shape[2], axis=1)
         rec_mu_mat = np.array([[yf for yk, yf in sorted(xf.items())] for xk, xf in sorted(self.mu.items())])
         rec_mu_mat = np.repeat(rec_mu_mat[:, :, np.newaxis], self.network.shape[0], axis=2)
-        rec_st_rnd = np.random.random(rec_sink.shape)
+        rec_st_rnd = np.random.randint(0, 1000, rec_sink.shape) * 0.001
         rec_sink_rnd = rec_sink * rec_st_rnd
-        nz_rec_sink = np.where(rec_sink_rnd != 0)
-        rec_sink_rnd[nz_rec_sink] = rec_sink_rnd[nz_rec_sink] < rec_mu_mat[nz_rec_sink]
+        rec_sink_rnd[rec_sink_rnd != 0] = rec_sink_rnd[rec_sink_rnd != 0] < rec_mu_mat[rec_sink_rnd != 0]
         self.infected_state = after_sink.clip(0, 1)
         self.recovery_state = self.recovery_state + np.sum(rec_sink_rnd, axis=0)
         self.recovery_state = self.recovery_state.clip(0, 1)
@@ -888,7 +885,17 @@ class SIRMultiplexNumpy(EpidemicModel):
             return np.where((self.recovery_state + self.infected_state) == 0)
 
     def get_num(self, state):
-        return len(self.get_by_state(state)[0])
+        # Check state
+        if state not in self.states:
+            raise ValueError("Wrong state for SIR model")
+        elif state == "i":
+            inf_mat = (self.infected_state * (1 - self.recovery_state))
+            return len(inf_mat[inf_mat > 0])
+        elif state == "r":
+            return len(self.recovery_state[self.recovery_state > 0])
+        else:
+            sus_mat = self.recovery_state + self.infected_state
+            return len(sus_mat[sus_mat == 0])
 
     def run(self, epochs=200, visualize=False, layers=None, labels=False, pause=2):
         plt.ion()
@@ -934,18 +941,18 @@ class SIRMultiplexNumpy(EpidemicModel):
 if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
     from nettools.multiplex import MultiplexConstructor
-    ng = NetworkGenerator(nodes=200)
+    ng = NetworkGenerator(nodes=300)
     ba2 = ng.ba_network()
-    er1 = ng.er_network(p=4.0 / 20.0)
+    er1 = ng.er_network(p=44.0 / 20.0)
     ba3 = ng.ba_network()
     mc = MultiplexConstructor()
     mn = mc.construct(ba2, ba3)
-    mn2 = mc.construct(ba2, ba3)
-    inter_beta_v2 = {0: {0: 0.6, 1: 0.3}, 1: {0: 0.6, 1: 0.1}}
-    sir = SIRMultiplexNumpy(mn, beta=inter_beta_v2, mu=0.5)
+    mn2 = mc.construct(ba2, er1)
+    inter_beta_v2 = {0: {0: 0.1, 1: 0.1}, 1: {0: 0.1, 1: 0.1}}
+    # sir = SIRMultiplexNumpy(mn, beta=inter_beta_v2, mu=0.5)
     from timeit import Timer
-    t = Timer(lambda: sir.epidemic_data(epochs=2000, show=False))
-    print t.timeit(number=1)
+    # t = Timer(lambda: sir.epidemic_data(epochs=2000, show=False))
+    # print t.timeit(number=1)
     # sir.run(visualize=True, layers=[0, 1], labels=True, pause=5)
     sir2 = SIRMultiplex(mn2, beta=inter_beta_v2, mu=0.5)
     t = Timer(lambda: sir2.epidemic_data(epochs=2000, show=False))

@@ -1,1 +1,1 @@
-from models import SIRMultiplex, SISMultiplex
+from models import SIRMultiplex, SISMultiplex, SIRMultiplexNumpy
