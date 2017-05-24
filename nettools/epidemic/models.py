@@ -940,24 +940,27 @@ class SIRMultiplexNumpy(EpidemicModel):
 
 if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
+    from nettools.utils.netutils import load_mtx
     from nettools.multiplex import MultiplexConstructor
-    ng = NetworkGenerator(nodes=300)
-    ba2 = ng.ba_network()
+    ng = NetworkGenerator(nodes=15)
+    ba2 = ng.ba_network(m0=3)
     er1 = ng.er_network(p=44.0 / 20.0)
     ba3 = ng.ba_network()
+    net = load_mtx("socfb-Berkeley13.mtx")
     mc = MultiplexConstructor()
     mn = mc.construct(ba2, ba3)
-    mn2 = mc.construct(ba2, er1)
+    mn2 = mc.construct(net)
+    beta_param = {0: {0: 0.05}}
     inter_beta_v2 = {0: {0: 0.1, 1: 0.1}, 1: {0: 0.1, 1: 0.1}}
-    # sir = SIRMultiplexNumpy(mn, beta=inter_beta_v2, mu=0.5)
+    # sir = SIRMultiplexNumpy(mn2, beta=beta_param, mu=1.0)
     from timeit import Timer
-    # t = Timer(lambda: sir.epidemic_data(epochs=2000, show=False))
+    # t = Timer(lambda: sir.epidemic_data(epochs=10, show=False))
     # print t.timeit(number=1)
     # sir.run(visualize=True, layers=[0, 1], labels=True, pause=5)
-    sir2 = SIRMultiplex(mn2, beta=inter_beta_v2, mu=0.5)
-    t = Timer(lambda: sir2.epidemic_data(epochs=2000, show=False))
+    sir2 = SIRMultiplex(mn2, beta=beta_param, mu=1.0)
+    t = Timer(lambda: sir2.epidemic_data(epochs=10, show=False))
     print t.timeit(number=1)
     # plt.show()
-    # sir.run(visualize=True, labels=True, layers=[0, 1])
+    # sir.run(visualize=False, labels=True, layers=[0])
     # test_net = mc.rewire_hubs(ba1, rsteps=100)
     # cnet = er([[y for y in range(20)] for x in range(3)], p=0.3, edges=None)

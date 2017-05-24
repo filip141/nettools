@@ -2,6 +2,7 @@ import os
 import random
 import numpy as np
 from nettools.multiplex.syn_mul_gen import MultiplexNetwork
+from nettools.monoplex.syn_net_gen import Network
 
 NX_CENTRALITY = {
     "degree": "degree_centrality",
@@ -14,6 +15,11 @@ NX_CENTRALITY = {
     "voterank": True,
     "supernode": True
 }
+
+MONOPLEX_DB = {
+    "facebook": "socfb-Berkeley13.mtx"
+}
+
 
 DB_LIST = {
     "london": {
@@ -31,6 +37,10 @@ DB_LIST = {
         "directed": False
     },
 }
+
+
+def load_monoplex_by_name(name):
+    return load_mtx(MONOPLEX_DB[name])
 
 
 def load_multinet_by_name(name):
@@ -93,6 +103,21 @@ def load_multinet(path_layers, path_edges, path_nodes, directed=False):
                             weighted=True, mappings=mappings, layers_attr=layers_attr)
 
 
+def load_mtx(path_nodes):
+    curr_dir = os.path.dirname(os.path.abspath(__file__))
+    db_edges = os.path.join(curr_dir, "..", "..", "data/networks", path_nodes)
+
+    with open(db_edges, 'r') as db_edges:
+        file_lines = db_edges.readlines()
+
+    mat_size = int(file_lines[1].split()[0])
+    numpy_mat = np.zeros((mat_size, mat_size))
+    for x_line in file_lines[2:]:
+        cord_1, cord_2 = x_line.split()
+        numpy_mat[int(cord_1) - 1, int(cord_2) - 1] = 1.0
+    return Network(numpy_mat)
+
+
 def sample_from_dist(dist, n_samples=1):
     # Compute cumsum
     samples = []
@@ -117,4 +142,15 @@ def sample_from_dist(dist, n_samples=1):
 
 
 if __name__ == '__main__':
-    load_multinet_by_name('london')
+    from nettools.monoplex.centrality import CentralityMeasure
+    import matplotlib.pyplot as plt
+    net = load_mtx("socfb-Berkeley13.mtx")
+    # net.plot_degree_dist()
+    cm = CentralityMeasure(net.network)
+    result = cm.kshell(no_crust=False)
+    best_nodes = sorted(result.items(), key=lambda x: x[1])[::-1]
+    nodes_sc = [x[1] for x in best_nodes]
+    plt.plot(np.sort(nodes_sc))
+    plt.show()
+    print()
+    # load_multinet_by_name('london')

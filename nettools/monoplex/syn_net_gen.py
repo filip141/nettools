@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 class Network(object):
 
-    def __init__(self, network, weights_layer=None, n_type="ER", weighted=False):
+    def __init__(self, network, weights_layer=None, n_type="Unknown", weighted=False):
         self.type = n_type
         self.network = network
         self.network_weighted = weights_layer
@@ -148,13 +148,13 @@ class NetworkGenerator(object):
         :param p:   Random network probability, connect or not,
         :return: Network object, containing information about network (adjacency, type)
         """
-        er_net = np.random.uniform(0, 1, size=(self.num_nodes, self.num_nodes))
-        er_net *= np.tri(*er_net.shape)
-        er_net += er_net.T
+        er_net = np.random.uniform(0, 1.0, size=(self.num_nodes, self.num_nodes))
         result = er_net.copy()
         result[er_net < p] = 1
         result[er_net > p] = 0
         np.fill_diagonal(result, 0)
+        result *= np.tri(*er_net.shape).T
+        result += result.T
         return Network(result, n_type="ER")
 
 

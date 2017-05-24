@@ -8,7 +8,9 @@ import nettools.monoplex
 class CentralityMeasure(object):
     def __init__(self, graph, pymnet=False):
         # Load graph
+        self.np_matrix = None
         if not pymnet:
+            self.np_matrix = graph
             self.network_graph = nx.from_numpy_matrix(graph, create_using=nx.MultiDiGraph())
         elif isinstance(graph, nettools.monoplex.Network):
             self.network_graph = nx.from_numpy_matrix(graph.network, create_using=nx.MultiDiGraph())
@@ -39,7 +41,7 @@ class CentralityMeasure(object):
             return None
 
     @staticmethod
-    def score_remove(k_net, score, sc_buff=None, crust=0):
+    def score_remove(k_net, score, sc_buff=None, crust=0, no_crust=False):
         if sc_buff is None:
             sc_buff = {}
         net_deg = np.sum(k_net, axis=1)
@@ -50,10 +52,11 @@ class CentralityMeasure(object):
             k_net[node, :] = 0
             k_net[:, node] = 0
             sc_buff[node] = score + crust
-        crust += 1
-        return CentralityMeasure.score_remove(k_net, score, sc_buff=sc_buff, crust=crust)
+        if not no_crust:
+            crust += 0.1
+        return CentralityMeasure.score_remove(k_net, score, sc_buff=sc_buff, crust=crust, no_crust=no_crust)
 
-    def kshell(self):
+    def kshell(self, no_crust=False):
         """
         K-Shell algorithm is implemented using 
         http://www.ifr.ac.uk/netsci08/Download/CT26_Toro_network/CT265_Kitsak.pdf
@@ -63,9 +66,13 @@ class CentralityMeasure(object):
         """
         node_scores = {}
         k_shell_score = 1
-        net_shell = nx.to_numpy_matrix(self.network_graph)
+        if self.np_matrix is None:
+            net_shell = nx.to_numpy_matrix(self.network_graph)
+        else:
+            net_shell = self.np_matrix
         while True:
-            net_shell, node_scores = self.score_remove(net_shell, k_shell_score, sc_buff=node_scores)
+            net_shell, node_scores = self.score_remove(net_shell, k_shell_score, sc_buff=node_scores,
+                                                       no_crust=no_crust)
             k_shell_score += 1
             if np.sum(net_shell) == 0:
                 # Prevent not connected nodes
