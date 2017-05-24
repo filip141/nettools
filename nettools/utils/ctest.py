@@ -479,10 +479,10 @@ if __name__ == '__main__':
     test_props = {'mean_num': 100, "epochs": 10, "beta": beta_param, "mu": rec_param, "et_points": 30}
 
     nt = NetworkTester()
-    # nt.add("Synth_BA_A0_1B0_6", mnet_ba, test_props)
+    nt.add("Synth_BA_A0_1B0_6", mnet_ba, test_props)
     # nt.add("Synth_BA_A0_1B0_6_Correlated", mnet_ba_c, test_props)
     # nt.add("SynthCorrelated", mnet_ba_c, test_props)
-    nt.add("Facebook_100Mean", mnet_fb, test_props)
+    # nt.add("Facebook_100Mean", mnet_fb, test_props)
     # nt.add("EUNet", network_eu, test_props)
     # nt.add("London", network_london, test_props)
     # nt.add("Fao", network_fao, test_props)
