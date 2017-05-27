@@ -231,7 +231,7 @@ class InterMeasures(object):
         # Compute coefficient
         d_net = (np.sum(network, axis=1) / over_rep)**2
         d_net = np.nan_to_num(d_net)
-        return (net_size[-1] / (net_size[-1] - 1)) * (1 - np.sum(d_net, axis=1))
+        return ((net_size[-1] + 1) / net_size[-1]) * (1 - np.sum(d_net, axis=1))
 
     @staticmethod
     def entropy_coeff(network):

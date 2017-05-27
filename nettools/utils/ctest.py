@@ -8,8 +8,8 @@ import nettools.monoplex
 import nettools.multiplex
 import matplotlib.pyplot as plt
 
-curr_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = os.path.join(curr_dir, "..", "..", "data")
+curr_file_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.join(curr_file_dir, "..", "..", "data")
 logging.basicConfig(filename=os.path.join(data_dir, "ctest_log.log"), level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -182,7 +182,9 @@ def centrality_recovery_rate_test(test_properties=None, visualise=False):
 
 
 def spread_eff_centr_test(network, test_properties=None, log_text=""):
-    nmethods = 9
+    ns_methods = ["eigenvector", "supernode"]
+    use_methods = nettools.utils.NX_CENTRALITY.keys()
+    use_methods = set(use_methods) - set(ns_methods)
     # Define test properties
     if test_properties is None:
         test_properties = {}
@@ -201,8 +203,10 @@ def spread_eff_centr_test(network, test_properties=None, log_text=""):
         test_properties["epochs"] = 50
     sum_result = test_properties.get("sum_result", False)
     centrality_result = test_properties.get("centrality")
+    selected_methods = test_properties.get("methods", use_methods)
     if centrality_result is not None:
-        nmethods = len(centrality_result.keys())
+        use_methods = set(centrality_result.keys())
+    use_methods = use_methods.intersection(selected_methods)
 
     plt.ion()
     # Check network
@@ -212,22 +216,16 @@ def spread_eff_centr_test(network, test_properties=None, log_text=""):
         raise AttributeError("Network should be Network object or numpy ndarray.")
 
     # Create networks
-    logger.debug("CTEST {}: Analysing recovery rate for Network".format(log_text))
+    logger.debug("CTEST {}: Methods: {}".format(log_text, use_methods))
+    logger.debug("CTEST {}: Analysing spreading for Network".format(log_text))
     # Examine centrality
     results_names = []
-    cent_scores = np.zeros((nmethods - 2, network.get_nodes_num()))
-    spread_val = np.zeros((nmethods - 2, network.get_nodes_num()))
+    cent_scores = np.zeros((len(use_methods), network.get_nodes_num()))
+    spread_val = np.zeros((len(use_methods), network.get_nodes_num()))
 
     # If centrality present add
-    if centrality_result is not None:
-        cnt_methods = centrality_result.keys()
-    else:
-        cnt_methods = nettools.utils.NX_CENTRALITY.keys()
     idx_cent = 0
-    for method in cnt_methods:
-        if method == 'supernode' or method == 'eigenvector':
-            logger.debug("CTEST {}: {} method currently not supported".format(log_text, method))
-            continue
+    for method in use_methods:
         results_names.append(method)
         if centrality_result is None:
             cn = nettools.monoplex.CentralityMeasure(nettools.multiplex.InterMeasures.aggregate(network.network))
@@ -245,7 +243,7 @@ def spread_eff_centr_test(network, test_properties=None, log_text=""):
                                                      seed_nodes=[cnode])
                 result = sir.run(epochs=test_properties["epochs"])
                 avg_results[n_time] = np.array(result) / float(network.get_layers_num() * network.get_nodes_num())
-            # If summ result option
+            # If sum result option
             if sum_result:
                 spread_val[idx_cent, cnode] = np.sum(np.mean(avg_results, axis=0)) / float(test_properties["epochs"])
             else:
@@ -398,6 +396,7 @@ class NetworkTester(object):
                 spread_bt[beta_1, beta_2] = np.mean(avg_results, axis=0)[-1]
                 logger.debug("NetworkTester {}:Threshold Test: {}-{} analyzed".format(scn_name, beta_1, beta_2))
         plt.imshow(spread_bt, extent=[0.0, 1.0, 1.0, 0.0], cmap=plt.get_cmap('plasma'), interpolation='none')
+        plt.colorbar()
         figure_path = os.path.join(plot_dir, "ep_thresh_{}.png".format(scn_name))
         plt.savefig(figure_path)
         logger.debug("NetworkTester {}:Figure saved to file,path: {}".format(scn_name, figure_path))
@@ -415,7 +414,7 @@ class NetworkTester(object):
         for method_idx in range(spread_val.shape[0]):
             method_scores_spread = spread_val[method_idx]
             method_scores_cent = cent_scores[method_idx]
-            method_scores_cent = method_scores_cent - np.mean(method_scores_cent) * 0.7
+            method_scores_cent = method_scores_cent - np.min(method_scores_cent)
             method_scores_cent = 0.65 * (method_scores_cent / np.max(method_scores_cent))
             # Find data ranks
             temp_sort = np.argsort(method_scores_cent)
@@ -450,10 +449,12 @@ if __name__ == '__main__':
     from nettools.multiplex import MultiplexConstructor, InterMeasures
     from nettools.utils import load_multinet_by_name, load_monoplex_by_name
 
-    network_fb = load_monoplex_by_name('facebook')
-    network_eu = load_multinet_by_name('EUAir')
-    network_fao = load_multinet_by_name('fao')
-    network_london = load_multinet_by_name('london')
+    # network_edu = load_monoplex_by_name('edu')
+    # network_ap = load_monoplex_by_name('usa-airport')
+    # network_fb = load_monoplex_by_name("facebook_small")
+    # network_eu = load_multinet_by_name('EUAir')
+    # network_fao = load_multinet_by_name('fao')
+    # network_london = load_multinet_by_name('london')
 
     avg_deg = 6.0
     nodes_nm = 500
@@ -461,29 +462,37 @@ if __name__ == '__main__':
     ng = NetworkGenerator(nodes=nodes_nm)
     ba1 = ng.ba_network(m0=int(avg_deg / 2.0))
     ba2 = ng.ba_network(m0=int(avg_deg / 2.0))
-    er1 = ng.er_network(p=avg_deg / float(nodes_nm - 1))
-    er2 = ng.er_network(p=avg_deg / float(nodes_nm - 1))
+    # er1 = ng.er_network(p=avg_deg / float(nodes_nm - 1))
+    # er2 = ng.er_network(p=avg_deg / float(nodes_nm - 1))
     ba_corr = mc.rewire_hubs(ba1, rsteps=5000)
     mc = MultiplexConstructor()
     mnet_ba = mc.construct(ba1, ba2)
-    mnet_fb = mc.construct(network_fb)
+    # mnet_erer = mc.construct(er2, er1)
+    # l1 = nettools.monoplex.Network(network_london.network[:, :, 1])
+    # l2 = nettools.monoplex.Network(network_london.network[:, :, 2])
+    # mnet_l12 = mc.construct(l1, l2)
+    # mnet_ms = mc.construct(network_ms)
+    # mnet_ap = mc.construct(network_ap)
+    # mnet_fb = mc.construct(network_fb)
     mnet_ba_c = mc.construct(ba1, ba_corr)
 
     print("Network generated and constructed!")
     # beta_param = {0: {0: 0.1, 1: 0.1, 2: 0.1}, 1: {0: 0.1, 1: 0.1, 2: 0.1}, 2: {0: 0.1, 1: 0.1, 2: 0.1}}
     # rec_param = {0: {0: 1.0, 1: 1.0, 2: 1.0}, 1: {0: 1.0, 1: 1.0, 2: 1.0}, 2: {0: 1.0, 1: 1.0, 2: 1.0}}
-    # beta_param = {0: {0: 0.1, 1: 0.1}, 1: {0: 0.6, 1: 0.6}}
-    # rec_param = {0: {0: 1.0, 1: 1.0}, 1: {0: 1.0, 1: 1.0}}
-    beta_param = {0: {0: 0.05}}
-    rec_param = {0: {0: 1.0}}
-    test_props = {'mean_num': 100, "epochs": 10, "beta": beta_param, "mu": rec_param, "et_points": 30}
+    beta_param = {0: {0: 0.1, 1: 0.1}, 1: {0: 0.4, 1: 0.4}}
+    rec_param = {0: {0: 1.0, 1: 1.0}, 1: {0: 1.0, 1: 1.0}}
+    # beta_param = {0: {0: 0.05}}
+    # rec_param = {0: {0: 1.0}}
+    test_props = {'mean_num': 100, "epochs": 10, "beta": beta_param, "mu": rec_param}
 
     nt = NetworkTester()
-    nt.add("Synth_BA_A0_1B0_6", mnet_ba, test_props)
-    # nt.add("Synth_BA_A0_1B0_6_Correlated", mnet_ba_c, test_props)
-    # nt.add("SynthCorrelated", mnet_ba_c, test_props)
-    # nt.add("Facebook_100Mean", mnet_fb, test_props)
+    # nt.add("Web_Edu_100Means", mnet_edu, test_props)
+    # nt.add("US_Air_100Mean", mnet_ap, test_props)
+    nt.add("Synth_BA_A0_1B0_4", mnet_ba, test_props)
+    # nt.add("ERER_Threshold", mnet_erer, test_props)
+    # nt.add("London_3_2_l2_th", mnet_l12, test_props)
     # nt.add("EUNet", network_eu, test_props)
     # nt.add("London", network_london, test_props)
     # nt.add("Fao", network_fao, test_props)
+    # nt.run('threshold_test')
     nt.run('global_spread')

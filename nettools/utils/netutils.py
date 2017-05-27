@@ -17,7 +17,12 @@ NX_CENTRALITY = {
 }
 
 MONOPLEX_DB = {
-    "facebook": "socfb-Berkeley13.mtx"
+    "arxiv-physics": "ca-AstroPh.mtx",
+    "facebook": "socfb-Berkeley13.mtx",
+    "messages": "ia-fb-messages.mtx",
+    "edu": "web-edu.mtx",
+    "usa-airport": "usairport.mtx",
+    "facebook_small": "socfb-Amherst41.mtx"
 }
 
 
@@ -111,10 +116,10 @@ def load_mtx(path_nodes):
         file_lines = db_edges.readlines()
 
     mat_size = int(file_lines[1].split()[0])
-    numpy_mat = np.zeros((mat_size, mat_size))
+    numpy_mat = np.zeros((mat_size, mat_size), dtype=np.uint8)
     for x_line in file_lines[2:]:
-        cord_1, cord_2 = x_line.split()
-        numpy_mat[int(cord_1) - 1, int(cord_2) - 1] = 1.0
+        cord_1, cord_2 = x_line.split()[:2]
+        numpy_mat[int(cord_1) - 1, int(cord_2) - 1] = 1
     return Network(numpy_mat)
 
 

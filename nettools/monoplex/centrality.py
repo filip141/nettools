@@ -5,6 +5,7 @@ import matplotlib
 import nettools.utils
 import nettools.monoplex
 
+
 class CentralityMeasure(object):
     def __init__(self, graph, pymnet=False):
         # Load graph
@@ -53,7 +54,7 @@ class CentralityMeasure(object):
             k_net[:, node] = 0
             sc_buff[node] = score + crust
         if not no_crust:
-            crust += 0.1
+            crust += 0.05
         return CentralityMeasure.score_remove(k_net, score, sc_buff=sc_buff, crust=crust, no_crust=no_crust)
 
     def kshell(self, no_crust=False):
@@ -163,7 +164,7 @@ class CentralityMeasure(object):
 
 if __name__ == '__main__':
     from nettools.monoplex import NetworkGenerator
-    ng = NetworkGenerator(nodes=500)
+    ng = NetworkGenerator(nodes=2000)
     net = ng.er_network(p=10.0 / 500.0)
     cn = CentralityMeasure(net.network, pymnet=False)
-    cent = cn.network_cn("degree")
+    cent = cn.network_cn("k-shell")
