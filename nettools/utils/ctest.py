@@ -8,10 +8,20 @@ import nettools.monoplex
 import nettools.multiplex
 import matplotlib.pyplot as plt
 
+
 curr_file_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(curr_file_dir, "..", "..", "data")
-logging.basicConfig(filename=os.path.join(data_dir, "ctest_log.log"), level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+# create a file handler
+handler = logging.FileHandler(os.path.join(data_dir, "ctest_log.log"))
+handler.setLevel(logging.INFO)
+
+# Log format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# add the handlers to the logger
+logger.addHandler(handler)
 
 
 def centrality_method_test(test_properties=None):
@@ -182,9 +192,25 @@ def centrality_recovery_rate_test(test_properties=None, visualise=False):
 
 
 def spread_eff_centr_test(network, test_properties=None, log_text=""):
-    ns_methods = ["eigenvector", "supernode"]
-    use_methods = nettools.utils.NX_CENTRALITY.keys()
-    use_methods = set(use_methods) - set(ns_methods)
+    # multilayer params
+    m_layer = test_properties.get("m_layer", False)
+    m_gamma = test_properties.get("m_gamma", 1)
+    m_beta = test_properties.get("m_beta", 1)
+    m_ks_mthx = test_properties.get("ks_mth", "k-shell")
+    # For single or multilayer analysis
+    if not m_layer:
+        # Define methods
+        ns_methods = ["eigenvector", "supernode"]
+        use_methods = nettools.utils.NX_CENTRALITY.keys()
+        use_methods = set(use_methods) - set(ns_methods)
+        # Define test network
+        cent_an_net = nettools.multiplex.InterMeasures.aggregate(network.network)
+    else:
+        use_methods = set(['ks-index', 'multi_pagerank', "multi_pagerank_numpy"])
+        logger.info("CTEST {}: Loaded multilayer mode, "
+                    "params -> gamma: {}, beta: {}, ks-mth: {}".format(log_text, m_gamma, m_beta, m_ks_mthx))
+        # Define test network
+        cent_an_net = network
     # Define test properties
     if test_properties is None:
         test_properties = {}
@@ -208,7 +234,6 @@ def spread_eff_centr_test(network, test_properties=None, log_text=""):
         use_methods = set(centrality_result.keys())
     use_methods = use_methods.intersection(selected_methods)
 
-    plt.ion()
     # Check network
     if isinstance(network, nettools.monoplex.Network) or isinstance(network, np.ndarray):
         network = nettools.multiplex.MultiplexNetwork(network.network)
@@ -216,8 +241,8 @@ def spread_eff_centr_test(network, test_properties=None, log_text=""):
         raise AttributeError("Network should be Network object or numpy ndarray.")
 
     # Create networks
-    logger.debug("CTEST {}: Methods: {}".format(log_text, use_methods))
-    logger.debug("CTEST {}: Analysing spreading for Network".format(log_text))
+    logger.info("CTEST {}: Methods: {}".format(log_text, use_methods))
+    logger.info("CTEST {}: Analysing spreading for Network".format(log_text))
     # Examine centrality
     results_names = []
     cent_scores = np.zeros((len(use_methods), network.get_nodes_num()))
@@ -228,11 +253,16 @@ def spread_eff_centr_test(network, test_properties=None, log_text=""):
     for method in use_methods:
         results_names.append(method)
         if centrality_result is None:
-            cn = nettools.monoplex.CentralityMeasure(nettools.multiplex.InterMeasures.aggregate(network.network))
-            results_cn = cn.network_cn(method)
+            if m_layer:
+                cn = nettools.multiplex.CentralityMultiplex(cent_an_net, beta=test_properties["beta"],
+                                                            mu=test_properties["mu"])
+                results_cn = cn.network_cn(method, gamma=m_gamma, beta=m_beta, ks_mth=m_ks_mthx)
+            else:
+                cn = nettools.monoplex.CentralityMeasure(cent_an_net)
+                results_cn = cn.network_cn(method)
         else:
             results_cn = centrality_result[method]
-        logger.debug("CTEST {}: Found centrality scores.".format(log_text))
+        logger.info("CTEST {}: Found centrality scores.".format(log_text))
         if method == 'hits':
             results_cn = results_cn[1]
         best_nodes = sorted(results_cn.items(), key=lambda x: x[1])[::-1]
@@ -249,10 +279,10 @@ def spread_eff_centr_test(network, test_properties=None, log_text=""):
             else:
                 spread_val[idx_cent, cnode] = np.mean(avg_results, axis=0)[-1]
             cent_scores[idx_cent, cnode] = cscore
-            logger.debug("CTEST {}: SIR: node {}.".format(log_text, cnode))
+            logger.info("CTEST {}: SIR: node {}.".format(log_text, cnode))
         idx_cent += 1
-        logger.debug("CTEST {}: {}: Spreading completed.".format(log_text, method))
-        logger.debug("CTEST {}: Analysed method: {}".format(log_text, method))
+        logger.info("CTEST {}: {}: Spreading completed.".format(log_text, method))
+        logger.info("CTEST {}: Analysed method: {}".format(log_text, method))
     return spread_val, cent_scores, results_names
 
 
@@ -271,13 +301,22 @@ class NetworkTester(object):
     def run(self, test_type):
         # iterate over scenarios
         for scn_name, scn_val in self.queue.items():
-            logger.debug("NetworkTester: Scenario {}".format(scn_name))
+            logger.info("NetworkTester: Scenario {}".format(scn_name))
             if test_type == 'node_spread':
                 self.multinet_spreading_test(scn_val[0], scn_name, scn_val[1])
             elif test_type == 'threshold_test':
                 self.et_test(network=scn_val[0], scn_name=scn_name, test_properties=scn_val[1])
             elif test_type == 'global_spread':
                 self.global_spread(network=scn_val[0], scn_name=scn_name, test_properties=scn_val[1])
+            elif test_type == 'correlation':
+                self.correlation_test(network=scn_val[0], scn_name=scn_name, test_properties=scn_val[1])
+            elif test_type == 'correlation_th':
+                self.correlation_th(network=scn_val[0], scn_name=scn_name, test_properties=scn_val[1])
+
+    @staticmethod
+    def running_mean(x_n, nnodes):
+        cumsum = np.cumsum(np.insert(x_n, 0, 0))
+        return (cumsum[nnodes:] - cumsum[:-nnodes]) / nnodes
 
     def multinet_spreading_test(self, network, sc_name, test_properties):
         n_layers = network.network.shape[2]
@@ -314,7 +353,7 @@ class NetworkTester(object):
                 if method == 'hits':
                     method = "Hits"
                     results = results[1]
-                logger.debug("CENTRALITY: {} measure complete.".format(method))
+                logger.info("CENTRALITY: {} measure complete.".format(method))
                 best_nodes = sorted(results.items(), key=lambda x: x[1])[::-1]
                 cent_dict_full[method] = dict(best_nodes)
 
@@ -325,7 +364,7 @@ class NetworkTester(object):
             spread_val, cent_scores, results_names = spread_eff_centr_test(network_con,
                                                                            test_properties=test_properties,
                                                                            log_text=sc_name)
-            logger.debug("NetworkTester {}:Spreading values computed for {} layer".format(sc_name, l_idx))
+            logger.info("NetworkTester {}:Spreading values computed for {} layer".format(sc_name, l_idx))
             # Plot
             fig_1 = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
             fig_2 = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
@@ -360,9 +399,9 @@ class NetworkTester(object):
             figure_path = os.path.join(plot_dir, "spreading_{}.png".format(l_idx))
             figure_path_log = os.path.join(plot_dir, "spreading_log_{}.png".format(l_idx))
             fig_1.savefig(figure_path)
-            logger.debug("NetworkTester {}:Figure saved to file,path: {}".format(sc_name, figure_path))
+            logger.info("NetworkTester {}:Figure saved to file,path: {}".format(sc_name, figure_path))
             fig_2.savefig(figure_path_log)
-            logger.debug("NetworkTester {}:Figure saved to file,path: {}".format(sc_name, figure_path_log))
+            logger.info("NetworkTester {}:Figure saved to file,path: {}".format(sc_name, figure_path_log))
 
     def et_test(self, network, scn_name, test_properties):
         # Define plot dir
@@ -394,21 +433,15 @@ class NetworkTester(object):
                     result = sir.run(epochs=epochs)
                     avg_results[n_time] = np.array(result) / float(network.get_layers_num() * network.get_nodes_num())
                 spread_bt[beta_1, beta_2] = np.mean(avg_results, axis=0)[-1]
-                logger.debug("NetworkTester {}:Threshold Test: {}-{} analyzed".format(scn_name, beta_1, beta_2))
+                logger.info("NetworkTester {}:Threshold Test: {}-{} analyzed".format(scn_name, beta_1, beta_2))
         plt.imshow(spread_bt, extent=[0.0, 1.0, 1.0, 0.0], cmap=plt.get_cmap('plasma'), interpolation='none')
         plt.colorbar()
         figure_path = os.path.join(plot_dir, "ep_thresh_{}.png".format(scn_name))
         plt.savefig(figure_path)
-        logger.debug("NetworkTester {}:Figure saved to file,path: {}".format(scn_name, figure_path))
+        logger.info("NetworkTester {}:Figure saved to file,path: {}".format(scn_name, figure_path))
 
-    def global_spread(self, network, scn_name, test_properties):
-        # Define plot dir
-        plot_dir = os.path.join(self.plot_main, scn_name)
-        if not os.path.isdir(plot_dir):
-            os.mkdir(plot_dir)
-        logger.debug("NetworkTester {}: Global Spread test started.".format(scn_name))
-        spread_val, cent_scores, results_names = spread_eff_centr_test(network, test_properties=test_properties,
-                                                                       log_text=scn_name)
+    @staticmethod
+    def generate_spread_plot(network, scn_name, spread_val, cent_scores, results_names, plot_dir, plot_code=240):
         fig_1 = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
         fig_2 = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
         for method_idx in range(spread_val.shape[0]):
@@ -422,12 +455,18 @@ class NetworkTester(object):
             data_centrality_rank[temp_sort] = np.arange(len(method_scores_cent))
 
             # Normalize
-            norm_cent = (cent_scores[method_idx, :] - np.min(
-                cent_scores[method_idx, :])) / np.max(cent_scores[method_idx, :])
-            norm_spread = (method_scores_spread - np.min(method_scores_spread)) / np.max(method_scores_spread)
+            norm_cent = cent_scores[method_idx, :] - np.min(cent_scores[method_idx, :])
+            norm_cent /= np.max(norm_cent)
+            norm_spread = method_scores_spread - np.min(method_scores_spread)
+            norm_spread /= np.max(norm_spread)
 
-            sp = fig_1.add_subplot(240 + method_idx + 1)
-            sp_log = fig_2.add_subplot(240 + method_idx + 1)
+            # Remove nans
+            norm_cent = np.nan_to_num(norm_cent)
+            norm_spread = np.nan_to_num(norm_spread)
+            method_scores_cent = np.nan_to_num(method_scores_cent)
+
+            sp = fig_1.add_subplot(plot_code + method_idx + 1)
+            sp_log = fig_2.add_subplot(plot_code + method_idx + 1)
             for node_id in range(network.get_nodes_num()):
                 color_rgb = colorsys.hsv_to_rgb(0.65 - method_scores_cent[node_id], 0.5, 1.0)
                 sp.scatter(data_centrality_rank[node_id], method_scores_spread[node_id],
@@ -439,9 +478,160 @@ class NetworkTester(object):
         figure_path = os.path.join(plot_dir, "global_multi_spread_{}.png".format(scn_name))
         figure_path_log = os.path.join(plot_dir, "global_multi_logspread_{}.png".format(scn_name))
         fig_1.savefig(figure_path)
-        logger.debug("NetworkTester {}: Figure saved to file,path: {}".format(scn_name, figure_path))
+        plt.close(fig_1)
+        logger.info("NetworkTester {}: Figure saved to file,path: {}".format(scn_name, figure_path))
         fig_2.savefig(figure_path_log)
-        logger.debug("NetworkTester {}: Figure saved to file,path: {}".format(scn_name, figure_path_log))
+        plt.close(fig_2)
+        logger.info("NetworkTester {}: Figure saved to file,path: {}".format(scn_name, figure_path_log))
+
+    def global_spread(self, network, scn_name, test_properties):
+        # Define plot dir
+        plot_dir = os.path.join(self.plot_main, scn_name)
+        if not os.path.isdir(plot_dir):
+            os.mkdir(plot_dir)
+        logger.info("NetworkTester {}: Global Spread test started.".format(scn_name))
+        spread_val, cent_scores, results_names = spread_eff_centr_test(network, test_properties=test_properties,
+                                                                       log_text=scn_name)
+        self.generate_spread_plot(network, scn_name, spread_val, cent_scores, results_names, plot_dir)
+
+    def correlation_test(self, network, scn_name, test_properties, save_fig=True, own_dir=None, hidden_spread=False,
+                         plot_code=240):
+        # Redefine path
+        if own_dir is None:
+            # Define plot dir
+            plot_dir = os.path.join(self.plot_main, scn_name)
+            if not os.path.isdir(plot_dir):
+                os.mkdir(plot_dir)
+        else:
+            plot_dir = own_dir
+        r_mean = test_properties.get('running_mean', 10)
+        logger.info("NetworkTester {}: Correlation test started.".format(scn_name))
+        spread_val, cent_scores, results_names = spread_eff_centr_test(network, test_properties=test_properties,
+                                                                       log_text=scn_name)
+        # If this option is used also color spreading plots will be generated
+        if hidden_spread:
+            self.generate_spread_plot(network, scn_name, spread_val, cent_scores, results_names, plot_dir, plot_code)
+
+        # Correlation plots
+        idx_counter = 1
+        corr_pearsons = {}
+        colors = "bgrcmrkygbb"
+        logger.info("NetworkTester {}: Running Mean spreading plot.")
+        if save_fig:
+            fig_1 = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
+            fig_2 = plt.figure(figsize=(20, 20), dpi=80, facecolor='w', edgecolor='k')
+        for method, nd_lab_scores, cent_val in zip(results_names, spread_val, cent_scores):
+            # Normalize values
+            normalized_spread = np.array(nd_lab_scores) - np.min(nd_lab_scores)
+            normalized_spread /= np.max(normalized_spread)
+            normalized_cent = cent_val - np.min(cent_val)
+            normalized_cent /= np.max(normalized_cent)
+            ma_spread = self.running_mean(nd_lab_scores, r_mean)
+            ma_spread = ma_spread - np.min(ma_spread)
+            ma_spread /= np.max(ma_spread)
+
+            # Remove nans
+            normalized_spread = np.nan_to_num(normalized_spread)
+            normalized_cent = np.nan_to_num(normalized_cent)
+            ma_spread = np.nan_to_num(ma_spread)
+
+            if save_fig:
+                # Add subplot
+                sp_1 = fig_1.add_subplot(plot_code + idx_counter)
+                sp_2 = fig_2.add_subplot(plot_code + idx_counter)
+                # Plot figure 1
+                sp_1.plot(ma_spread, colors[idx_counter + 1])
+                sp_1.set_title(method)
+                # plot figure 2
+                sp_2.plot(normalized_spread, colors[idx_counter], label="spreading eff")
+                sp_2.plot(ma_spread, colors[idx_counter + 1], label="spreading mean")
+                sp_2.plot(normalized_cent, colors[idx_counter + 2], label="centrality")
+                sp_2.legend()
+                sp_2.set_title(method)
+            # Calculate correlation
+            pcorr = np.corrcoef(normalized_spread, normalized_cent)[0, 1]
+            corr_pearsons[method] = [np.nan_to_num(pcorr)]
+            idx_counter += 1
+        # Sometimes figures should not be saved, function can be used by other tests
+        if save_fig:
+            figure_path = os.path.join(plot_dir, "correlation_mean_{}.png".format(scn_name))
+            fig_1.savefig(figure_path)
+            plt.close(fig_1)
+            logger.info("NetworkTester {}: Figure saved to file,path: {}".format(scn_name, figure_path))
+            figure_path = os.path.join(plot_dir, "correlation_full_{}.png".format(scn_name))
+            fig_2.savefig(figure_path)
+            plt.close(fig_2)
+            logger.info("NetworkTester {}: Figure saved to file,path: {}".format(scn_name, figure_path))
+        return corr_pearsons
+
+    def correlation_th(self, network, scn_name, test_properties):
+        # Define plot dir
+        plot_dir = os.path.join(self.plot_main, scn_name)
+        if not os.path.isdir(plot_dir):
+            os.mkdir(plot_dir)
+        # Define values
+        scale_th = 1.0
+        npoints = test_properties.get("et_points")
+        transmission = test_properties.get("transmission", 'defined')
+        tr_val = test_properties.get("tr_value", 1.0)
+        ept_thresh = test_properties.get("ept_thresh", False)
+        et_method = test_properties.get("et_method", 'hits')
+        logger.info("Analyzed method: {}, points: {}, "
+                    "ept_thresh: {}, transmission: {}".format(et_method, npoints, ept_thresh, transmission))
+        if npoints is None:
+            raise ValueError("Attribute et_points not defined, Please define it for this test.")
+        elif network.network.shape[2] > 2:
+            raise ValueError("Only 2 layer network supported")
+        # iterate over layers
+        logger.info("NetworkTester {}:Correlation Threshold Test Started, Test may "
+                    "produce many log messages".format(scn_name))
+        test_properties['methods'] = [et_method]
+        # Compute epidemic threshold
+        epidemic_thresh = 1.0 / np.mean(
+            [np.mean(np.sum(network.network[:, :, l_id], axis=1)) for l_id in range(network.get_layers_num())]
+        )
+        # if option with constraint selected
+        if ept_thresh:
+            scale_th = epidemic_thresh
+        correlation_bt = np.zeros((npoints, npoints))
+        for beta_1 in range(npoints):
+            for beta_2 in range(npoints):
+                # Change beta values for transmission parameter
+                if transmission == 'same':
+                    beta_param = {
+                        0: {0: scale_th * (beta_1 / float(npoints)), 1: scale_th * (beta_1 / float(npoints))},
+                        1: {1: scale_th * (beta_2 / float(npoints)), 0: scale_th * (beta_2 / float(npoints))}
+                    }
+                elif transmission == 'axis':
+                    beta_param = {
+                        0: {0: scale_th * (beta_1 / float(npoints)), 1: scale_th * (beta_2 / float(npoints))},
+                        1: {1: scale_th * (beta_1 / float(npoints)), 0: scale_th * (beta_2 / float(npoints))}
+                    }
+                elif transmission == 'defined':
+                    beta_param = {
+                        0: {0: scale_th * (beta_1 / float(npoints)), 1: tr_val},
+                        1: {1: scale_th * (beta_2 / float(npoints)), 0: tr_val}
+                    }
+                else:
+                    raise ValueError("Option not defined!")
+                rec_param = {0: {0: 1.0, 1: 1.0}, 1: {1: 1.0, 0: 1.0}}
+                # Change test params
+                test_properties['beta'] = beta_param
+                test_properties['mu'] = rec_param
+                corr_val = self.correlation_test(network, "{}_{}_{}".format(scn_name, beta_1, beta_2),
+                                                 test_properties, own_dir=plot_dir, hidden_spread=True, plot_code=110)
+                correlation_bt[beta_1, beta_2] = corr_val[et_method][0]
+                logger.info("NetworkTester {}:Correlation Threshold Test: {} "
+                            "Correlation Value".format(scn_name, corr_val[et_method][0]))
+                logger.info("NetworkTester {}:Correlation "
+                            "Threshold Test: {}-{} analyzed".format(scn_name, scale_th * (beta_1 / float(npoints)),
+                                                                    scale_th * (beta_2 / float(npoints))))
+        plt.imshow(correlation_bt, extent=[0.0, scale_th * 1.0, scale_th * 1.0, 0.0],
+                   cmap=plt.get_cmap('plasma'), interpolation='none')
+        plt.colorbar()
+        figure_path = os.path.join(plot_dir, "corr_thresh_{}.png".format(scn_name))
+        plt.savefig(figure_path)
+        logger.info("NetworkTester {}:Figure saved to file,path: {}".format(scn_name, figure_path))
 
 
 if __name__ == '__main__':
@@ -452,47 +642,53 @@ if __name__ == '__main__':
     # network_edu = load_monoplex_by_name('edu')
     # network_ap = load_monoplex_by_name('usa-airport')
     # network_fb = load_monoplex_by_name("facebook_small")
-    # network_eu = load_multinet_by_name('EUAir')
+    network_eu = load_multinet_by_name('EUAir')
     # network_fao = load_multinet_by_name('fao')
     # network_london = load_multinet_by_name('london')
 
     avg_deg = 6.0
-    nodes_nm = 500
+    nodes_nm = 100
     mc = MultiplexConstructor()
     ng = NetworkGenerator(nodes=nodes_nm)
     ba1 = ng.ba_network(m0=int(avg_deg / 2.0))
     ba2 = ng.ba_network(m0=int(avg_deg / 2.0))
-    # er1 = ng.er_network(p=avg_deg / float(nodes_nm - 1))
-    # er2 = ng.er_network(p=avg_deg / float(nodes_nm - 1))
+    er1 = ng.er_network(p=avg_deg / float(nodes_nm - 1))
+    er2 = ng.er_network(p=avg_deg / float(nodes_nm - 1))
     ba_corr = mc.rewire_hubs(ba1, rsteps=5000)
     mc = MultiplexConstructor()
-    mnet_ba = mc.construct(ba1, ba2)
-    # mnet_erer = mc.construct(er2, er1)
-    # l1 = nettools.monoplex.Network(network_london.network[:, :, 1])
-    # l2 = nettools.monoplex.Network(network_london.network[:, :, 2])
-    # mnet_l12 = mc.construct(l1, l2)
+    mnet_baba = mc.construct(ba1, ba2)
+    mnet_erer = mc.construct(er2, er1)
+    mnet_erba = mc.construct(er1, ba1)
+    l1 = nettools.monoplex.Network(network_eu.network[:, :, 8])
+    l2 = nettools.monoplex.Network(network_eu.network[:, :, 12])
+    mnet_l12 = mc.construct(l1, l2)
     # mnet_ms = mc.construct(network_ms)
     # mnet_ap = mc.construct(network_ap)
     # mnet_fb = mc.construct(network_fb)
-    mnet_ba_c = mc.construct(ba1, ba_corr)
+    mnet_baba_c = mc.construct(ba1, ba_corr)
 
     print("Network generated and constructed!")
     # beta_param = {0: {0: 0.1, 1: 0.1, 2: 0.1}, 1: {0: 0.1, 1: 0.1, 2: 0.1}, 2: {0: 0.1, 1: 0.1, 2: 0.1}}
     # rec_param = {0: {0: 1.0, 1: 1.0, 2: 1.0}, 1: {0: 1.0, 1: 1.0, 2: 1.0}, 2: {0: 1.0, 1: 1.0, 2: 1.0}}
-    beta_param = {0: {0: 0.1, 1: 0.1}, 1: {0: 0.4, 1: 0.4}}
+    beta_param = {0: {0: 0.1, 1: 0.1}, 1: {0: 0.3, 1: 0.3}}
     rec_param = {0: {0: 1.0, 1: 1.0}, 1: {0: 1.0, 1: 1.0}}
     # beta_param = {0: {0: 0.05}}
     # rec_param = {0: {0: 1.0}}
-    test_props = {'mean_num': 100, "epochs": 10, "beta": beta_param, "mu": rec_param}
+    test_props = {'mean_num': 100, "epochs": 10, "beta": beta_param, "mu": rec_param, "et_points": 10,
+                  "et_method": "ks-index", "transmission": "defined", "m_layer": True,
+                  "m_gamma": 0, "m_beta": 1, "tr_value": 1.0,
+                  "ks_mth": "k-shell", "ept_thresh": False}
 
     nt = NetworkTester()
     # nt.add("Web_Edu_100Means", mnet_edu, test_props)
     # nt.add("US_Air_100Mean", mnet_ap, test_props)
-    nt.add("Synth_BA_A0_1B0_4", mnet_ba, test_props)
+    nt.add("NC_Corr_Th_EUAir_KSi_100_l8_l12_IN", mnet_l12, test_props)
+    # nt.add("EUNet_0_1_0_3_gs", network_fao, test_props)
     # nt.add("ERER_Threshold", mnet_erer, test_props)
     # nt.add("London_3_2_l2_th", mnet_l12, test_props)
     # nt.add("EUNet", network_eu, test_props)
     # nt.add("London", network_london, test_props)
     # nt.add("Fao", network_fao, test_props)
     # nt.run('threshold_test')
-    nt.run('global_spread')
+    nt.run('correlation_th')
+    # nt.run('global_spread')

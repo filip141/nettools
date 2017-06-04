@@ -11,8 +11,8 @@ class CentralityMeasure(object):
         # Load graph
         self.np_matrix = None
         if not pymnet:
-            self.np_matrix = graph
-            self.network_graph = nx.from_numpy_matrix(graph, create_using=nx.MultiDiGraph())
+            self.np_matrix = graph.copy()
+            self.network_graph = nx.from_numpy_matrix(self.np_matrix, create_using=nx.MultiDiGraph())
         elif isinstance(graph, nettools.monoplex.Network):
             self.network_graph = nx.from_numpy_matrix(graph.network, create_using=nx.MultiDiGraph())
         else:
